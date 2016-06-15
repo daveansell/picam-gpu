@@ -145,9 +145,14 @@ int main(int argc, const char **argv)
 		const void* frame_data; int frame_sz;
 		while(!cam->BeginReadFrame(0,frame_data,frame_sz)) {};
 
+		//Show frame data
+		int i = 0;
+
 		//lock the chosen frame buffer, and copy it directly into the corresponding open gl texture
 		{
 			const uint8_t* data = (const uint8_t*)frame_data;
+			for(i = 0; i < MAIN_TEXTURE_WIDTH*MAIN_TEXTURE_HEIGHT; i++)
+				printf("%d: %d, "i, data);
 			int ypitch = MAIN_TEXTURE_WIDTH;
 			int ysize = ypitch*MAIN_TEXTURE_HEIGHT;
 			int uvpitch = MAIN_TEXTURE_WIDTH/2;
