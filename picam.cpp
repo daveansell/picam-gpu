@@ -4,14 +4,39 @@
 #include "graphics.h"
 #include <time.h>
 #include <curses.h>
-
+#include <iostream>
+#include<string>
+#include <opencv2/opencv.hpp>
 #define MAIN_TEXTURE_WIDTH 768
 #define MAIN_TEXTURE_HEIGHT 512
 
 #define TEXTURE_GRID_COLS 4
 #define TEXTURE_GRID_ROWS 4
+#define LOAD_ERROR -1
 
+using namespace std;
+using namespace cv;
 char tmpbuff[MAIN_TEXTURE_WIDTH*MAIN_TEXTURE_HEIGHT*4];
+
+int loadImage(string path, const void* data){
+	//cout << path << endl;
+	Mat image = imread(path);
+	cvtColor(image, image, CV_BGR2GRAY);
+	if (image.empty()){
+		cout << "image not found" << endl;
+		return LOAD_ERROR; 	
+	}
+	int imgSize = image.rows*image.cols;
+
+	uchar * pixelData = new uchar[imgSize];
+	
+	for(int i =0; i < image.rows; i++)
+		for(int j = 0; j < image.cols; j++)
+			pixelData[image.rows*i + j] = image.at<uchar>(i, j);
+	
+	data = (void*)pixelData;
+	return 0;
+}
 
 //entry point
 int main(int argc, const char **argv)
@@ -108,7 +133,8 @@ int main(int argc, const char **argv)
 	cbreak();       /* take input chars one at a time, no wait for \n */
 	clear();
 	nodelay(stdscr, TRUE);
-
+	void *pic_data;
+	loadImage("background.jpg", pic_data);
 	for(int i = 0; i < 3000; i++)
 	{
 		int ch = getch();
@@ -143,16 +169,19 @@ int main(int argc, const char **argv)
 
 		//spin until we have a camera frame
 		const void* frame_data; int frame_sz;
+		
 		while(!cam->BeginReadFrame(0,frame_data,frame_sz)) {};
 
 		//Show frame data
-		int i = 0;
 
 		//lock the chosen frame buffer, and copy it directly into the corresponding open gl texture
 		{
-			const uint8_t* data = (const uint8_t*)frame_data;
-			for(i = 0; i < MAIN_TEXTURE_WIDTH*MAIN_TEXTURE_HEIGHT; i++)
-				printf("%d: %d, "i, data);
+			
+			//loadImage("background.jpg", pic_data);
+
+			//const uint8_t* data = (const uint8_t*)frame_data;
+			const uint8_t* data = (const uint8_t*)pic_data;
+
 			int ypitch = MAIN_TEXTURE_WIDTH;
 			int ysize = ypitch*MAIN_TEXTURE_HEIGHT;
 			int uvpitch = MAIN_TEXTURE_WIDTH/2;
