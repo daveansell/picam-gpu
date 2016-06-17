@@ -17,34 +17,40 @@
 using namespace std;
 using namespace cv;
 char tmpbuff[MAIN_TEXTURE_WIDTH*MAIN_TEXTURE_HEIGHT*4];
-
+/*
 int loadImage(string path, const void* data){
 	//cout << path << endl;
 	Mat image = imread(path);
-	cvtColor(image, image, CV_BGR2GRAY);
+	cvtColor(image, image, CV_BGR2YUV);	
+	//cvtColor(image, image, CV_BGR2GRAY);
 	if (image.empty()){
 		cout << "image not found" << endl;
 		return LOAD_ERROR; 	
 	}
-	int imgSize = image.rows*image.cols;
+	int imgSize = image.total();
 
 	uchar * pixelData = new uchar[imgSize];
 	
 	for(int i =0; i < image.rows; i++)
 		for(int j = 0; j < image.cols; j++)
 			pixelData[image.rows*i + j] = image.at<uchar>(i, j);
+
+	namedWindow("dont lag pls", WINDOW_NORMAL);
+	imshow("dont lag pls", image);
+	waitKey(10000);
 	
 	data = (void*)pixelData;
 	return 0;
-}
+}*/
 
 //entry point
 int main(int argc, const char **argv)
 {
 	//init graphics and the camera
 	InitGraphics();
+	cout << "graphics initialized" << endl;
 	CCamera* cam = StartCamera(MAIN_TEXTURE_WIDTH, MAIN_TEXTURE_HEIGHT,15,1,false);
-
+	cout << "camera initialized" << endl;
 	//create 4 textures of decreasing size
 	GfxTexture ytexture,utexture,vtexture,rgbtextures[32],blurtexture,greysobeltexture,sobeltexture,mediantexture,redtexture,dilatetexture,erodetexture,threshtexture;
 	ytexture.CreateGreyScale(MAIN_TEXTURE_WIDTH,MAIN_TEXTURE_HEIGHT);
@@ -133,9 +139,32 @@ int main(int argc, const char **argv)
 	cbreak();       /* take input chars one at a time, no wait for \n */
 	clear();
 	nodelay(stdscr, TRUE);
+
+	// MY CODE TRYING TO DO SOMETHING
 	void *pic_data;
-	loadImage("background.jpg", pic_data);
-	for(int i = 0; i < 3000; i++)
+	//loadImage("background.jpg", pic_data);
+	Mat image = imread("background.jpg");
+	cvtColor(image, image, CV_BGR2GRAY);
+	if (image.empty()){
+		cout << "image not found" << endl;
+		return LOAD_ERROR; 	
+	}
+	int imgSize = image.total();
+
+	uchar * pixelData = new uchar[imgSize];
+	uchar* zeros = new uchar[imgSize];
+
+	for(int i =0; i < image.rows; i++)
+		for(int j = 0; j < image.cols; j++){
+			pixelData[image.rows*i + j] = image.at<uchar>(i, j);
+			zeros[i] = 100;
+		}
+
+	pic_data = (void*)pixelData;
+	
+
+	sleep(2);
+	for(int i = 0; i < 1000; i++)
 	{
 		int ch = getch();
 		if(ch != ERR)
@@ -168,17 +197,11 @@ int main(int argc, const char **argv)
 		}
 
 		//spin until we have a camera frame
-		const void* frame_data; int frame_sz;
-		
-		while(!cam->BeginReadFrame(0,frame_data,frame_sz)) {};
+		//const void* frame_data; int frame_sz; while(!cam->BeginReadFrame(0,frame_data,frame_sz)) {};
 
 		//Show frame data
-
 		//lock the chosen frame buffer, and copy it directly into the corresponding open gl texture
 		{
-			
-			//loadImage("background.jpg", pic_data);
-
 			//const uint8_t* data = (const uint8_t*)frame_data;
 			const uint8_t* data = (const uint8_t*)pic_data;
 
@@ -188,13 +211,18 @@ int main(int argc, const char **argv)
 			int uvsize = uvpitch*MAIN_TEXTURE_HEIGHT/2;
 			//int upos = ysize+16*uvpitch;
 			//int vpos = upos+uvsize+4*uvpitch;
+			
 			int upos = ysize;
+			//int upos = 0;
 			int vpos = upos+uvsize;
+			//int vpos = 0;
 			//printf("Frame data len: 0x%x, ypitch: 0x%x ysize: 0x%x, uvpitch: 0x%x, uvsize: 0x%x, u at 0x%x, v at 0x%x, total 0x%x\n", frame_sz, ypitch, ysize, uvpitch, uvsize, upos, vpos, vpos+uvsize);
 			ytexture.SetPixels(data);
-			utexture.SetPixels(data+upos);
-			vtexture.SetPixels(data+vpos);
-			cam->EndReadFrame(0);
+			//utexture.SetPixels(data+upos);
+			utexture.SetPixels(zeros);
+			//vtexture.SetPixels(data+vpos);
+			vtexture.SetPixels(zeros);
+			//cam->EndReadFrame(0);
 		}
 
 		//begin frame, draw the texture then end frame (the bit of maths just fits the image to the screen while maintaining aspect ratio)

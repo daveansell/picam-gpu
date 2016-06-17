@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 project( picam )
-SET(COMPILE_DEFINITIONS -Werror)
+SET(COMPILE_DEFINITIONS -Wall -std=c++11 -g -O3)
 find_package( OpenCV REQUIRED )
 include_directories(/opt/vc/include)
 include_directories(/opt/vc/userland-master/interface/vcos)
