@@ -7,12 +7,19 @@
 #include <iostream>
 #include<string>
 #include <opencv2/opencv.hpp>
-#define MAIN_TEXTURE_WIDTH 768
-#define MAIN_TEXTURE_HEIGHT 512
+#include <sys/types.h>
+#include <dirent.h>
+//#define MAIN_TEXTURE_WIDTH 768
+//#define MAIN_TEXTURE_HEIGHT 512
+
+#define MAIN_TEXTURE_WIDTH 1280
+#define MAIN_TEXTURE_HEIGHT 1024
 
 #define TEXTURE_GRID_COLS 4
 #define TEXTURE_GRID_ROWS 4
 #define LOAD_ERROR -1
+
+const char *input_dir = "/home/pi/dataset/thousand";
 
 using namespace std;
 using namespace cv;
@@ -42,7 +49,10 @@ int loadImage(string path, const void* data){
 	data = (void*)pixelData;
 	return 0;
 }*/
-
+bool ends_with(const std::string &suffix, const std::string &str)
+{
+    return str.size() >= suffix.size() && str.compare(str.size() - suffix.size(), suffix.size(), suffix) == 0;
+}
 //entry point
 int main(int argc, const char **argv)
 {
@@ -150,22 +160,73 @@ int main(int argc, const char **argv)
 		return LOAD_ERROR; 	
 	}
 	int imgSize = image.total();
+	
+	printf("image.total: %d, image.rows*i + j: %d\n", imgSize, image.rows*image.cols);
+	
 
 	uchar * pixelData = new uchar[imgSize];
 	uchar* zeros = new uchar[imgSize];
 
 	for(int i =0; i < image.rows; i++)
 		for(int j = 0; j < image.cols; j++){
-			pixelData[image.rows*i + j] = image.at<uchar>(i, j);
-			zeros[i] = 100;
+			pixelData[image.cols*i + j] = image.at<uchar>(i, j);
+			zeros[image.cols*i + j] = 120;
 		}
 
 	pic_data = (void*)pixelData;
 	
 
-	sleep(2);
-	for(int i = 0; i < 1000; i++)
-	{
+
+	//Sort files 
+	 //Array of file names
+	vector<String> all_files;
+	//Pointer to input directory
+	DIR *dir_ptr = opendir(input_dir);
+	while (true) {
+		dirent *dir_ent = readdir(dir_ptr);
+
+		if (NULL == dir_ent) {
+			break;
+		}
+
+		all_files.push_back(string(dir_ent->d_name));
+	}
+	closedir(dir_ptr);
+
+	//Sort file names 
+	sort(all_files.begin(), all_files.end());
+
+	vector<String> image_files;
+	for (String file : all_files) {
+		if (ends_with(".jpg", file)) {
+			image_files.push_back(file);
+		}
+	}
+	//
+	//for(int i = 0; i < 1000; i++)
+	int loop = 0;
+	printf("starting loop\n");
+	for (String file : image_files)
+	{	
+		image = imread(string(input_dir) + "/" + file, 1);
+		namedWindow ("please be something", WINDOW_NORMAL);
+		imshow("please be something", image); 
+		cvtColor(image, image, CV_BGR2GRAY);
+		if (image.empty()){
+			cout << "image not found" << endl;
+			return LOAD_ERROR; 	
+		}
+		
+		// Pre load pixel data
+		printf("starting pixel data filling\n");
+		for(int i =0; i < MAIN_TEXTURE_HEIGHT; i++)
+			for(int j = 0; j < MAIN_TEXTURE_WIDTH; j++){
+				pixelData[MAIN_TEXTURE_WIDTH*i + j] = image.at<uchar>(i, j);
+			}		
+		printf("after pixel data\n");		
+
+		pic_data = (void*)pixelData;
+
 		int ch = getch();
 		if(ch != ERR)
 		{
@@ -195,7 +256,7 @@ int main(int argc, const char **argv)
 			move(0,0);
 			refresh();
 		}
-
+		
 		//spin until we have a camera frame
 		//const void* frame_data; int frame_sz; while(!cam->BeginReadFrame(0,frame_data,frame_sz)) {};
 
@@ -304,8 +365,8 @@ int main(int argc, const char **argv)
 		start_time = gettime_now.tv_nsec;
 
 		//print frame rate
-		float fr = float(double(i+1)/total_time_s);
-		if((i%30)==0)
+		float fr = float(double((loop++)+1)/total_time_s);
+		if((loop%30)==0)
 		{
 			mvprintw(0,0,"Framerate: %g\n",fr);
 			move(0,0);
