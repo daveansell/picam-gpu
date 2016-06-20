@@ -12,8 +12,16 @@
 //#define MAIN_TEXTURE_WIDTH 768
 //#define MAIN_TEXTURE_HEIGHT 512
 
-#define MAIN_TEXTURE_WIDTH 1280
-#define MAIN_TEXTURE_HEIGHT 1024
+#define PIC_WIDTH 2592
+#define PIC_HEIGHT 1944
+
+#define DSIZE 0.5
+
+//#define MAIN_TEXTURE_WIDTH PIC_WIDTH*DSIZE
+//#define MAIN_TEXTURE_HEIGHT PIC_HEIGHT*DSIZE
+
+const int MAIN_TEXTURE_WIDTH = PIC_WIDTH*DSIZE;
+const int MAIN_TEXTURE_HEIGHT = PIC_HEIGHT*DSIZE;
 
 #define TEXTURE_GRID_COLS 4
 #define TEXTURE_GRID_ROWS 4
@@ -59,8 +67,8 @@ int main(int argc, const char **argv)
 	//init graphics and the camera
 	InitGraphics();
 	cout << "graphics initialized" << endl;
-	CCamera* cam = StartCamera(MAIN_TEXTURE_WIDTH, MAIN_TEXTURE_HEIGHT,15,1,false);
-	cout << "camera initialized" << endl;
+	//CCamera* cam = StartCamera(MAIN_TEXTURE_WIDTH, MAIN_TEXTURE_HEIGHT,15,1,false);
+	//cout << "camera initialized" << endl;
 	//create 4 textures of decreasing size
 	GfxTexture ytexture,utexture,vtexture,rgbtextures[32],blurtexture,greysobeltexture,sobeltexture,mediantexture,redtexture,dilatetexture,erodetexture,threshtexture;
 	ytexture.CreateGreyScale(MAIN_TEXTURE_WIDTH,MAIN_TEXTURE_HEIGHT);
@@ -88,6 +96,7 @@ int main(int argc, const char **argv)
 		levels++;
 	printf("Levels used: %d, smallest level w/h: %d/%d\n",levels,MAIN_TEXTURE_WIDTH>>(levels-1),MAIN_TEXTURE_HEIGHT>>(levels-1));
 
+	//Create multiple levels of downscaling RGB
 	for(int i = 0; i < levels; i++)
 	{
 		rgbtextures[i].CreateRGBA(MAIN_TEXTURE_WIDTH>>i,MAIN_TEXTURE_HEIGHT>>i);
@@ -163,6 +172,7 @@ int main(int argc, const char **argv)
 	
 	printf("image.total: %d, image.rows*i + j: %d\n", imgSize, image.rows*image.cols);
 	
+	sleep(1);
 
 	uchar * pixelData = new uchar[imgSize];
 	uchar* zeros = new uchar[imgSize];
@@ -209,9 +219,10 @@ int main(int argc, const char **argv)
 	for (String file : image_files)
 	{	
 		image = imread(string(input_dir) + "/" + file, 1);
-		namedWindow ("please be something", WINDOW_NORMAL);
-		imshow("please be something", image); 
+		
 		cvtColor(image, image, CV_BGR2GRAY);
+		
+		resize(image, image, Size(), DSIZE, DSIZE);		
 		if (image.empty()){
 			cout << "image not found" << endl;
 			return LOAD_ERROR; 	
@@ -219,7 +230,7 @@ int main(int argc, const char **argv)
 		
 		// Pre load pixel data
 		printf("starting pixel data filling\n");
-		for(int i =0; i < MAIN_TEXTURE_HEIGHT; i++)
+		for(int i = 0; i < MAIN_TEXTURE_HEIGHT; i++)
 			for(int j = 0; j < MAIN_TEXTURE_WIDTH; j++){
 				pixelData[MAIN_TEXTURE_WIDTH*i + j] = image.at<uchar>(i, j);
 			}		
