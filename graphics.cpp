@@ -6,6 +6,8 @@
 #include <assert.h>
 #include <unistd.h>
 #include <iostream>
+#include <ctime>
+#include <curses.h>
 #include "bcm_host.h"
 #include "graphics.h"
 
@@ -422,6 +424,7 @@ void DrawThreshRect(GfxTexture* texture, float x0, float y0, float x1, float y1,
 
 void DrawBlurredRect(GfxTexture* texture, float x0, float y0, float x1, float y1, GfxTexture* render_target)
 {
+	clock_t start = clock();
 	if(render_target)
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER,render_target->GetFramebufferId());
@@ -454,6 +457,7 @@ void DrawBlurredRect(GfxTexture* texture, float x0, float y0, float x1, float y1
 		glBindFramebuffer(GL_FRAMEBUFFER,0);
 		glViewport ( 0, 0, GScreenWidth, GScreenHeight );
 	}
+	printf("time passed for blur: %f\n", (float)(clock() - start)/CLOCKS_PER_SEC );
 }
 
 void DrawDilateRect(GfxTexture* texture, float x0, float y0, float x1, float y1, GfxTexture* render_target)
@@ -530,6 +534,7 @@ void DrawErodeRect(GfxTexture* texture, float x0, float y0, float x1, float y1, 
 
 void DrawSobelRect(GfxTexture* texture, float x0, float y0, float x1, float y1, GfxTexture* render_target)
 {
+	clock_t start = clock();
 	if(render_target)
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER,render_target->GetFramebufferId());
@@ -562,6 +567,7 @@ void DrawSobelRect(GfxTexture* texture, float x0, float y0, float x1, float y1, 
 		glBindFramebuffer(GL_FRAMEBUFFER,0);
 		glViewport ( 0, 0, GScreenWidth, GScreenHeight );
 	}
+	printf("time passed for sobel: %f\n", (float)(clock() - start)/CLOCKS_PER_SEC );
 }
 
 

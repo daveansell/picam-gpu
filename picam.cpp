@@ -9,11 +9,16 @@
 #include <opencv2/opencv.hpp>
 #include <sys/types.h>
 #include <dirent.h>
+#include <omp.h>
 //#define MAIN_TEXTURE_WIDTH 768
 //#define MAIN_TEXTURE_HEIGHT 512
 
 #define PIC_WIDTH 2592
 #define PIC_HEIGHT 1944
+
+
+//#define PIC_WIDTH 2400
+//#define PIC_HEIGHT 1350
 
 #define DSIZE 0.5
 
@@ -32,31 +37,7 @@ const char *input_dir = "/home/pi/dataset/thousand";
 using namespace std;
 using namespace cv;
 char tmpbuff[MAIN_TEXTURE_WIDTH*MAIN_TEXTURE_HEIGHT*4];
-/*
-int loadImage(string path, const void* data){
-	//cout << path << endl;
-	Mat image = imread(path);
-	cvtColor(image, image, CV_BGR2YUV);	
-	//cvtColor(image, image, CV_BGR2GRAY);
-	if (image.empty()){
-		cout << "image not found" << endl;
-		return LOAD_ERROR; 	
-	}
-	int imgSize = image.total();
 
-	uchar * pixelData = new uchar[imgSize];
-	
-	for(int i =0; i < image.rows; i++)
-		for(int j = 0; j < image.cols; j++)
-			pixelData[image.rows*i + j] = image.at<uchar>(i, j);
-
-	namedWindow("dont lag pls", WINDOW_NORMAL);
-	imshow("dont lag pls", image);
-	waitKey(10000);
-	
-	data = (void*)pixelData;
-	return 0;
-}*/
 bool ends_with(const std::string &suffix, const std::string &str)
 {
     return str.size() >= suffix.size() && str.compare(str.size() - suffix.size(), suffix.size(), suffix) == 0;
@@ -64,12 +45,14 @@ bool ends_with(const std::string &suffix, const std::string &str)
 //entry point
 int main(int argc, const char **argv)
 {
-	//init graphics and the camera
+	//initialize graphics and the camera
 	InitGraphics();
 	cout << "graphics initialized" << endl;
 	//CCamera* cam = StartCamera(MAIN_TEXTURE_WIDTH, MAIN_TEXTURE_HEIGHT,15,1,false);
 	//cout << "camera initialized" << endl;
+	
 	//create 4 textures of decreasing size
+	//declare texture holders
 	GfxTexture ytexture,utexture,vtexture,rgbtextures[32],blurtexture,greysobeltexture,sobeltexture,mediantexture,redtexture,dilatetexture,erodetexture,threshtexture;
 	ytexture.CreateGreyScale(MAIN_TEXTURE_WIDTH,MAIN_TEXTURE_HEIGHT);
 	utexture.CreateGreyScale(MAIN_TEXTURE_WIDTH/2,MAIN_TEXTURE_HEIGHT/2);
@@ -170,9 +153,7 @@ int main(int argc, const char **argv)
 	}
 	int imgSize = image.total();
 	
-	printf("image.total: %d, image.rows*i + j: %d\n", imgSize, image.rows*image.cols);
-	
-	sleep(1);
+	//printf("image.total: %d, image.rows*i + j: %d\n", imgSize, image.rows*image.cols);
 
 	uchar * pixelData = new uchar[imgSize];
 	uchar* zeros = new uchar[imgSize];
@@ -218,6 +199,7 @@ int main(int argc, const char **argv)
 	printf("starting loop\n");
 	for (String file : image_files)
 	{	
+		clock_t read_start = clock();
 		image = imread(string(input_dir) + "/" + file, 1);
 		
 		cvtColor(image, image, CV_BGR2GRAY);
@@ -229,14 +211,18 @@ int main(int argc, const char **argv)
 		}
 		
 		// Pre load pixel data
-		printf("starting pixel data filling\n");
-		for(int i = 0; i < MAIN_TEXTURE_HEIGHT; i++)
+		//printf("starting pixel data filling\n");
+		#pragma omp parallel num_threads(4) shared(pixelData, image)
+		#pragma omp for schedule(static)		
+		for(int i = 0; i < MAIN_TEXTURE_HEIGHT; i++){
 			for(int j = 0; j < MAIN_TEXTURE_WIDTH; j++){
 				pixelData[MAIN_TEXTURE_WIDTH*i + j] = image.at<uchar>(i, j);
 			}		
-		printf("after pixel data\n");		
+		}
+		//printf("after pixel data\n");		
 
 		pic_data = (void*)pixelData;
+		printf("time passed for reading image: %f\n", (float)(clock() - read_start)/CLOCKS_PER_SEC );
 
 		int ch = getch();
 		if(ch != ERR)
@@ -383,7 +369,7 @@ int main(int argc, const char **argv)
 			move(0,0);
 			refresh();
 		}
-
+		printf("time passed for whole frame: %f\n", (float)(clock() - read_start)/CLOCKS_PER_SEC );
 	}
 
 	StopCamera();
