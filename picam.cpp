@@ -17,16 +17,17 @@
 #define PIC_HEIGHT 1944
 
 
-//#define PIC_WIDTH 2400
+//#define PIC_WIDTH 2048
 //#define PIC_HEIGHT 1350
 
-#define DSIZE 0.5
+#define HSIZE 1
+#define WSIZE 0.79012345678901234
 
 //#define MAIN_TEXTURE_WIDTH PIC_WIDTH*DSIZE
 //#define MAIN_TEXTURE_HEIGHT PIC_HEIGHT*DSIZE
 
-const int MAIN_TEXTURE_WIDTH = PIC_WIDTH*DSIZE;
-const int MAIN_TEXTURE_HEIGHT = PIC_HEIGHT*DSIZE;
+const int MAIN_TEXTURE_WIDTH = PIC_WIDTH*WSIZE;
+const int MAIN_TEXTURE_HEIGHT = PIC_HEIGHT*HSIZE;
 
 #define TEXTURE_GRID_COLS 4
 #define TEXTURE_GRID_ROWS 4
@@ -197,6 +198,8 @@ int main(int argc, const char **argv)
 	//for(int i = 0; i < 1000; i++)
 	int loop = 0;
 	printf("starting loop\n");
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	glPixelStorei(GL_PACK_ALIGNMENT, 1);
 	for (String file : image_files)
 	{	
 		clock_t read_start = clock();
@@ -204,7 +207,7 @@ int main(int argc, const char **argv)
 		
 		cvtColor(image, image, CV_BGR2GRAY);
 		
-		resize(image, image, Size(), DSIZE, DSIZE);		
+		resize(image, image, Size(), WSIZE, HSIZE);		
 		if (image.empty()){
 			cout << "image not found" << endl;
 			return LOAD_ERROR; 	
