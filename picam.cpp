@@ -29,8 +29,8 @@
 const int MAIN_TEXTURE_WIDTH = PIC_WIDTH*WSIZE;
 const int MAIN_TEXTURE_HEIGHT = PIC_HEIGHT*HSIZE;
 
-#define TEXTURE_GRID_COLS 4
-#define TEXTURE_GRID_ROWS 4
+#define TEXTURE_GRID_COLS 2
+#define TEXTURE_GRID_ROWS 2
 #define LOAD_ERROR -1
 
 const char *input_dir = "/home/pi/dataset/thousand";
@@ -71,10 +71,10 @@ int main(int argc, const char **argv)
 	memset(texture_grid,0,sizeof(texture_grid));
 	int next_texture_grid_entry = 0;
 
-	texture_grid[next_texture_grid_entry++] = &ytexture;
-	texture_grid[next_texture_grid_entry++] = &utexture;
-	texture_grid[next_texture_grid_entry++] = &vtexture;
-
+	//texture_grid[next_texture_grid_entry++] = &ytexture;
+	//texture_grid[next_texture_grid_entry++] = &utexture;
+	//texture_grid[next_texture_grid_entry++] = &vtexture;
+	
 	int levels=1;
 	while( (MAIN_TEXTURE_WIDTH>>levels)>16 && (MAIN_TEXTURE_HEIGHT>>levels)>16 && (levels+1)<32)
 		levels++;
@@ -85,25 +85,26 @@ int main(int argc, const char **argv)
 	{
 		rgbtextures[i].CreateRGBA(MAIN_TEXTURE_WIDTH>>i,MAIN_TEXTURE_HEIGHT>>i);
 		rgbtextures[i].GenerateFrameBuffer();
-		texture_grid[next_texture_grid_entry++] = &rgbtextures[i];
+		//texture_grid[next_texture_grid_entry++] = &rgbtextures[i];
 	}
-
+	//THOSE ARE INTERESTING//
 	blurtexture.CreateRGBA(MAIN_TEXTURE_WIDTH/2,MAIN_TEXTURE_HEIGHT/2);
 	blurtexture.GenerateFrameBuffer();
-	texture_grid[next_texture_grid_entry++] = &blurtexture;
+	texture_grid[0] = &blurtexture;
 
 	sobeltexture.CreateRGBA(MAIN_TEXTURE_WIDTH/2,MAIN_TEXTURE_HEIGHT/2);
 	sobeltexture.GenerateFrameBuffer();
-	texture_grid[next_texture_grid_entry++] = &sobeltexture;
+	texture_grid[1] = &sobeltexture;
 
 	greysobeltexture.CreateRGBA(MAIN_TEXTURE_WIDTH/2,MAIN_TEXTURE_HEIGHT/2);
 	greysobeltexture.GenerateFrameBuffer();
-	texture_grid[next_texture_grid_entry++] = &greysobeltexture;
+	texture_grid[2] = &greysobeltexture;
 
 	mediantexture.CreateRGBA(MAIN_TEXTURE_WIDTH/2,MAIN_TEXTURE_HEIGHT/2);
 	mediantexture.GenerateFrameBuffer();
-	texture_grid[next_texture_grid_entry++] = &mediantexture;
-
+	texture_grid[3] = &mediantexture;
+	//THOSE ARE INTERESTING//
+/*
 	redtexture.CreateRGBA(MAIN_TEXTURE_WIDTH/2,MAIN_TEXTURE_HEIGHT/2);
 	redtexture.GenerateFrameBuffer();
 	texture_grid[next_texture_grid_entry++] = &redtexture;
@@ -119,7 +120,7 @@ int main(int argc, const char **argv)
 	threshtexture.CreateRGBA(MAIN_TEXTURE_WIDTH/2,MAIN_TEXTURE_HEIGHT/2);
 	threshtexture.GenerateFrameBuffer();
 	texture_grid[next_texture_grid_entry++] = &threshtexture;
-
+*/
 
 	float texture_grid_col_size = 2.f/TEXTURE_GRID_COLS;
 	float texture_grid_row_size = 2.f/TEXTURE_GRID_ROWS;
@@ -157,6 +158,9 @@ int main(int argc, const char **argv)
 	//printf("image.total: %d, image.rows*i + j: %d\n", imgSize, image.rows*image.cols);
 
 	uchar * pixelData = new uchar[imgSize];
+	//uchar * y = new uchar[imgSize];
+	//uchar * u = new uchar[imgSize];
+	//uchar * v = new uchar[imgSize];
 	uchar* zeros = new uchar[imgSize];
 
 	for(int i =0; i < image.rows; i++)
@@ -205,9 +209,9 @@ int main(int argc, const char **argv)
 		clock_t read_start = clock();
 		image = imread(string(input_dir) + "/" + file, 1);
 		
+		resize(image, image, Size(), WSIZE, HSIZE);
 		cvtColor(image, image, CV_BGR2GRAY);
-		
-		resize(image, image, Size(), WSIZE, HSIZE);		
+				
 		if (image.empty()){
 			cout << "image not found" << endl;
 			return LOAD_ERROR; 	
@@ -215,8 +219,6 @@ int main(int argc, const char **argv)
 		
 		// Pre load pixel data
 		//printf("starting pixel data filling\n");
-		#pragma omp parallel num_threads(4) shared(pixelData, image)
-		#pragma omp for schedule(static)		
 		for(int i = 0; i < MAIN_TEXTURE_HEIGHT; i++){
 			for(int j = 0; j < MAIN_TEXTURE_WIDTH; j++){
 				pixelData[MAIN_TEXTURE_WIDTH*i + j] = image.at<uchar>(i, j);
@@ -240,17 +242,17 @@ int main(int argc, const char **argv)
 				do_pipeline = !do_pipeline;
 			else if(ch == 'w')
 			{
-				SaveFrameBuffer("tex_fb.png");
-				yreadtexture.Save("tex_y.png");
-				ureadtexture.Save("tex_u.png");
-				vreadtexture.Save("tex_v.png");
-				rgbtextures[0].Save("tex_rgb_hi.png");
-				rgbtextures[levels-1].Save("tex_rgb_low.png");
-				blurtexture.Save("tex_blur.png");
-				sobeltexture.Save("tex_sobel.png");
-				dilatetexture.Save("tex_dilate.png");
-				erodetexture.Save("tex_erode.png");
-				threshtexture.Save("tex_thresh.png");
+				//SaveFrameBuffer("tex_fb.png");
+				//yreadtexture.Save("tex_y.png");
+				//ureadtexture.Save("tex_u.png");
+				//vreadtexture.Save("tex_v.png");
+				//rgbtextures[0].Save("tex_rgb_hi.png");
+				//rgbtextures[levels-1].Save("tex_rgb_low.png");
+				blurtexture.Save("tex_blur.png", "blur");
+				sobeltexture.Save("tex_sobel.png", "sobel");
+				//dilatetexture.Save("tex_dilate.png");
+				//erodetexture.Save("tex_erode.png");
+				//threshtexture.Save("tex_thresh.png");
 			}
 
 			move(0,0);
@@ -313,16 +315,16 @@ int main(int argc, const char **argv)
 				DrawMedianRect(&rgbtextures[1],-1.f,-1.f,1.f,1.f,&mediantexture);
 
 			if(selected_texture == -1 || &redtexture == texture_grid[selected_texture])
-				DrawMultRect(&rgbtextures[1],-1.f,-1.f,1.f,1.f,1,0,0,&redtexture);
+				//DrawMultRect(&rgbtextures[1],-1.f,-1.f,1.f,1.f,1,0,0,&redtexture);
 
 			if(selected_texture == -1 || &dilatetexture == texture_grid[selected_texture])
-				DrawDilateRect(&rgbtextures[1],-1.f,-1.f,1.f,1.f,&dilatetexture);
+				//DrawDilateRect(&rgbtextures[1],-1.f,-1.f,1.f,1.f,&dilatetexture);
 
 			if(selected_texture == -1 || &erodetexture == texture_grid[selected_texture])
-				DrawErodeRect(&rgbtextures[1],-1.f,-1.f,1.f,1.f,&erodetexture);
+				//DrawErodeRect(&rgbtextures[1],-1.f,-1.f,1.f,1.f,&erodetexture);
 
 			if(selected_texture == -1 || &threshtexture == texture_grid[selected_texture])
-				DrawThreshRect(&ytexture,-1.f,-1.f,1.f,1.f,0.25f,0.25f,0.25f,&threshtexture);
+				//DrawThreshRect(&ytexture,-1.f,-1.f,1.f,1.f,0.25f,0.25f,0.25f,&threshtexture);
 
 			if(selected_texture == -1)
 			{
@@ -349,11 +351,18 @@ int main(int argc, const char **argv)
 		{
 			DrawMedianRect(&ytexture,-1.f,-1.f,1.f,1.f,&mediantexture);
 			DrawSobelRect(&mediantexture,-1.f,-1.f,1.f,1.f,&sobeltexture);
-			DrawErodeRect(&sobeltexture,-1.f,-1.f,1.f,1.f,&erodetexture);
+			//DrawErodeRect(&sobeltexture,-1.f,-1.f,1.f,1.f,&erodetexture);
 			//DrawDilateRect(&erodetexture,-1.f,-1.f,1.f,1.f,&dilatetexture);
-			DrawThreshRect(&erodetexture,-1.f,-1.f,1.f,1.f,0.05f,0.05f,0.05f,&threshtexture);
-			DrawTextureRect(&threshtexture,-1,-1,1,1,NULL);
+			//DrawThreshRect(&erodetexture,-1.f,-1.f,1.f,1.f,0.05f,0.05f,0.05f,&threshtexture);
+			//DrawTextureRect(&threshtexture,-1,-1,1,1,NULL);
 		}
+	
+		clock_t write_start = clock();	
+		blurtexture.Save("tex_blur.png", "blur");
+		sobeltexture.Save("tex_sobel.png", "sobel");
+
+		
+		printf("time passed for writing image: %f\n", (float)(clock() - write_start)/CLOCKS_PER_SEC );
 
 		EndFrame();
 

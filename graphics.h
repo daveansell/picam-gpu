@@ -1,5 +1,7 @@
 #pragma once
 
+#include <opencv2/opencv.hpp>
+#include <string>
 #include "GLES2/gl2.h"
 #include "EGL/egl.h"
 #include "EGL/eglext.h"
@@ -62,7 +64,8 @@ public:
 	GLuint GetFramebufferId() { return FramebufferId; }
 	int GetWidth() {return Width;}
 	int GetHeight() {return Height;}
-	void Save(const char* fname);
+	//void Save(const char* fname);
+	cv::Mat Save(const char* fname, std::string type);
 };
 
 void SaveFrameBuffer(const char* fname);

@@ -12,6 +12,9 @@
 #include "graphics.h"
 
 #define check() assert(glGetError() == 0)
+#define debug 1
+
+using namespace cv;
 
 uint32_t GScreenWidth;
 uint32_t GScreenHeight;
@@ -727,18 +730,33 @@ void SaveFrameBuffer(const char* fname)
 
 }
 
-void GfxTexture::Save(const char* fname)
+Mat GfxTexture::Save(const char* fname, std::string type)
 {
+	std::ostringstream buffer;
+	static int ncalls;
 	void* image = malloc(Width*Height*4);
 	glBindFramebuffer(GL_FRAMEBUFFER,FramebufferId);
 	check();
 	glReadPixels(0,0,Width,Height,IsRGBA ? GL_RGBA : GL_LUMINANCE, GL_UNSIGNED_BYTE, image);
+	//glReadPixels(0,0,Width,Height, GL_RGBA, GL_UNSIGNED_BYTE, image);
 	check();
 	glBindFramebuffer(GL_FRAMEBUFFER,0);
 
-	unsigned error = lodepng::encode(fname, (const unsigned char*)image, Width, Height, IsRGBA ? LCT_RGBA : LCT_GREY);
-	if(error) 
-		printf("error: %d\n",error);
+	Mat cvImage(Size(Width, Height), CV_8UC4,  image);
+	
+	if (debug) {
+		buffer << "debug/image-" << type <<  ncalls++ << ".jpg";
 
+		imwrite(buffer.str(), cvImage);
+		buffer.str(std::string());
+		buffer.clear();
+		//LODE PNG IS BAD
+		/*
+		unsigned error = lodepng::encode(fname, (const unsigned char*)image, Width, Height, IsRGBA ? LCT_RGBA : LCT_GREY);
+		if(error) 
+			printf("error: %d\n",error);
+		*/
+	}
 	free(image);
+	return cvImage;
 }
