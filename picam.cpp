@@ -10,15 +10,11 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include <omp.h>
-//#define MAIN_TEXTURE_WIDTH 768
-//#define MAIN_TEXTURE_HEIGHT 512
+
+#define debug 0
 
 #define PIC_WIDTH 2592
 #define PIC_HEIGHT 1944
-
-
-//#define PIC_WIDTH 2048
-//#define PIC_HEIGHT 1350
 
 #define HSIZE 1
 #define WSIZE 0.79012345678901234
@@ -29,7 +25,7 @@
 const int MAIN_TEXTURE_WIDTH = PIC_WIDTH*WSIZE;
 const int MAIN_TEXTURE_HEIGHT = PIC_HEIGHT*HSIZE;
 
-#define TEXTURE_GRID_COLS 2
+#define TEXTURE_GRID_COLS 1
 #define TEXTURE_GRID_ROWS 2
 #define LOAD_ERROR -1
 
@@ -54,19 +50,23 @@ int main(int argc, const char **argv)
 	
 	//create 4 textures of decreasing size
 	//declare texture holders
-	GfxTexture ytexture,utexture,vtexture,rgbtextures[32],blurtexture,greysobeltexture,sobeltexture,mediantexture,redtexture,dilatetexture,erodetexture,threshtexture;
+	GfxTexture ytexture, greysobeltexture, mediantexture;
+	GfxTexture ytexture2, greysobeltexture2, mediantexture2;
+	//GfxTexture utexture,vtexture,rgbtextures[32],blurtexture,sobeltexture,redtexture,dilatetexture,erodetexture,threshtexture;
 	ytexture.CreateGreyScale(MAIN_TEXTURE_WIDTH,MAIN_TEXTURE_HEIGHT);
-	utexture.CreateGreyScale(MAIN_TEXTURE_WIDTH/2,MAIN_TEXTURE_HEIGHT/2);
-	vtexture.CreateGreyScale(MAIN_TEXTURE_WIDTH/2,MAIN_TEXTURE_HEIGHT/2);
+	ytexture2.CreateGreyScale(MAIN_TEXTURE_WIDTH,MAIN_TEXTURE_HEIGHT);
+		
+	//utexture.CreateGreyScale(MAIN_TEXTURE_WIDTH/2,MAIN_TEXTURE_HEIGHT/2);
+	//vtexture.CreateGreyScale(MAIN_TEXTURE_WIDTH/2,MAIN_TEXTURE_HEIGHT/2);
 
-	GfxTexture yreadtexture,ureadtexture,vreadtexture;
+	/*GfxTexture yreadtexture,ureadtexture,vreadtexture;
 	yreadtexture.CreateRGBA(MAIN_TEXTURE_WIDTH,MAIN_TEXTURE_HEIGHT);
 	yreadtexture.GenerateFrameBuffer();
 	ureadtexture.CreateRGBA(MAIN_TEXTURE_WIDTH/2,MAIN_TEXTURE_HEIGHT/2);
 	ureadtexture.GenerateFrameBuffer();
 	vreadtexture.CreateRGBA(MAIN_TEXTURE_WIDTH/2,MAIN_TEXTURE_HEIGHT/2);
 	vreadtexture.GenerateFrameBuffer();
-
+	*/
 	GfxTexture* texture_grid[TEXTURE_GRID_COLS*TEXTURE_GRID_ROWS];
 	memset(texture_grid,0,sizeof(texture_grid));
 	int next_texture_grid_entry = 0;
@@ -75,34 +75,42 @@ int main(int argc, const char **argv)
 	//texture_grid[next_texture_grid_entry++] = &utexture;
 	//texture_grid[next_texture_grid_entry++] = &vtexture;
 	
-	int levels=1;
+	/*int levels=1;
 	while( (MAIN_TEXTURE_WIDTH>>levels)>16 && (MAIN_TEXTURE_HEIGHT>>levels)>16 && (levels+1)<32)
 		levels++;
 	printf("Levels used: %d, smallest level w/h: %d/%d\n",levels,MAIN_TEXTURE_WIDTH>>(levels-1),MAIN_TEXTURE_HEIGHT>>(levels-1));
-
+	
 	//Create multiple levels of downscaling RGB
 	for(int i = 0; i < levels; i++)
 	{
 		rgbtextures[i].CreateRGBA(MAIN_TEXTURE_WIDTH>>i,MAIN_TEXTURE_HEIGHT>>i);
 		rgbtextures[i].GenerateFrameBuffer();
 		//texture_grid[next_texture_grid_entry++] = &rgbtextures[i];
-	}
+	}*/
 	//THOSE ARE INTERESTING//
-	blurtexture.CreateRGBA(MAIN_TEXTURE_WIDTH/2,MAIN_TEXTURE_HEIGHT/2);
+	/*blurtexture.CreateRGBA(MAIN_TEXTURE_WIDTH/2,MAIN_TEXTURE_HEIGHT/2);
 	blurtexture.GenerateFrameBuffer();
 	texture_grid[0] = &blurtexture;
 
 	sobeltexture.CreateRGBA(MAIN_TEXTURE_WIDTH/2,MAIN_TEXTURE_HEIGHT/2);
 	sobeltexture.GenerateFrameBuffer();
 	texture_grid[1] = &sobeltexture;
-
-	greysobeltexture.CreateRGBA(MAIN_TEXTURE_WIDTH/2,MAIN_TEXTURE_HEIGHT/2);
+	*/
+	greysobeltexture.CreateRGBA(MAIN_TEXTURE_WIDTH, MAIN_TEXTURE_HEIGHT);
 	greysobeltexture.GenerateFrameBuffer();
-	texture_grid[2] = &greysobeltexture;
+	texture_grid[0] = &greysobeltexture;
 
-	mediantexture.CreateRGBA(MAIN_TEXTURE_WIDTH/2,MAIN_TEXTURE_HEIGHT/2);
+	greysobeltexture2.CreateRGBA(MAIN_TEXTURE_WIDTH ,MAIN_TEXTURE_HEIGHT);
+	greysobeltexture2.GenerateFrameBuffer();
+	texture_grid[1] = &greysobeltexture2;
+
+	mediantexture.CreateRGBA(MAIN_TEXTURE_WIDTH,MAIN_TEXTURE_HEIGHT);
 	mediantexture.GenerateFrameBuffer();
-	texture_grid[3] = &mediantexture;
+	texture_grid[2] = &mediantexture;
+
+	mediantexture2.CreateRGBA(MAIN_TEXTURE_WIDTH,MAIN_TEXTURE_HEIGHT);
+	mediantexture2.GenerateFrameBuffer();
+	texture_grid[3] = &mediantexture2;
 	//THOSE ARE INTERESTING//
 /*
 	redtexture.CreateRGBA(MAIN_TEXTURE_WIDTH/2,MAIN_TEXTURE_HEIGHT/2);
@@ -148,15 +156,17 @@ int main(int argc, const char **argv)
 	void *pic_data;
 	//loadImage("background.jpg", pic_data);
 	Mat image = imread("background.jpg");
-	cvtColor(image, image, CV_BGR2GRAY);
+	Mat outputImage;
+	//cvtColor(image, image, CV_BGR2GRAY);
 	if (image.empty()){
-		cout << "image not found" << endl;
+		cout << "reference image not found" << endl;
 		return LOAD_ERROR; 	
 	}
 	int imgSize = image.total();
 	
 	//printf("image.total: %d, image.rows*i + j: %d\n", imgSize, image.rows*image.cols);
 
+	//Allocate buffers for pixel Data and U and V fillings
 	uchar * pixelData = new uchar[imgSize];
 	//uchar * y = new uchar[imgSize];
 	//uchar * u = new uchar[imgSize];
@@ -165,8 +175,7 @@ int main(int argc, const char **argv)
 
 	for(int i =0; i < image.rows; i++)
 		for(int j = 0; j < image.cols; j++){
-			pixelData[image.cols*i + j] = image.at<uchar>(i, j);
-			zeros[image.cols*i + j] = 120;
+			zeros[image.cols*i + j] = 125;
 		}
 
 	pic_data = (void*)pixelData;
@@ -202,6 +211,8 @@ int main(int argc, const char **argv)
 	//for(int i = 0; i < 1000; i++)
 	int loop = 0;
 	printf("starting loop\n");
+
+	//Fixes bit allignment problems
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glPixelStorei(GL_PACK_ALIGNMENT, 1);
 	for (String file : image_files)
@@ -227,7 +238,7 @@ int main(int argc, const char **argv)
 		//printf("after pixel data\n");		
 
 		pic_data = (void*)pixelData;
-		printf("time passed for reading image: %f\n", (float)(clock() - read_start)/CLOCKS_PER_SEC );
+		printw("time passed for reading image: %f\n", (float)(clock() - read_start)/CLOCKS_PER_SEC );
 
 		int ch = getch();
 		if(ch != ERR)
@@ -248,8 +259,10 @@ int main(int argc, const char **argv)
 				//vreadtexture.Save("tex_v.png");
 				//rgbtextures[0].Save("tex_rgb_hi.png");
 				//rgbtextures[levels-1].Save("tex_rgb_low.png");
-				blurtexture.Save("tex_blur.png", "blur");
-				sobeltexture.Save("tex_sobel.png", "sobel");
+				mediantexture.Save("tex_blur.png", "blur");
+				//blurtexture.Save("tex_blur.png", "blur");
+				//sobeltexture.Save("tex_sobel.png", "sobel");
+				greysobeltexture.Save("tex_sobel.png", "sobel");				
 				//dilatetexture.Save("tex_dilate.png");
 				//erodetexture.Save("tex_erode.png");
 				//threshtexture.Save("tex_thresh.png");
@@ -268,53 +281,62 @@ int main(int argc, const char **argv)
 			//const uint8_t* data = (const uint8_t*)frame_data;
 			const uint8_t* data = (const uint8_t*)pic_data;
 
-			int ypitch = MAIN_TEXTURE_WIDTH;
-			int ysize = ypitch*MAIN_TEXTURE_HEIGHT;
-			int uvpitch = MAIN_TEXTURE_WIDTH/2;
-			int uvsize = uvpitch*MAIN_TEXTURE_HEIGHT/2;
+			//int ypitch = MAIN_TEXTURE_WIDTH;
+			//int ysize = ypitch*MAIN_TEXTURE_HEIGHT;
+			//int uvpitch = MAIN_TEXTURE_WIDTH/2;
+			//int uvsize = uvpitch*MAIN_TEXTURE_HEIGHT/2;
 			//int upos = ysize+16*uvpitch;
 			//int vpos = upos+uvsize+4*uvpitch;
 			
-			int upos = ysize;
+			//int upos = ysize;
 			//int upos = 0;
-			int vpos = upos+uvsize;
+			//int vpos = upos+uvsize;
 			//int vpos = 0;
 			//printf("Frame data len: 0x%x, ypitch: 0x%x ysize: 0x%x, uvpitch: 0x%x, uvsize: 0x%x, u at 0x%x, v at 0x%x, total 0x%x\n", frame_sz, ypitch, ysize, uvpitch, uvsize, upos, vpos, vpos+uvsize);
 			ytexture.SetPixels(data);
 			//utexture.SetPixels(data+upos);
-			utexture.SetPixels(zeros);
+			//utexture.SetPixels(zeros);
 			//vtexture.SetPixels(data+vpos);
-			vtexture.SetPixels(zeros);
+			//vtexture.SetPixels(zeros);
 			//cam->EndReadFrame(0);
 		}
 
 		//begin frame, draw the texture then end frame (the bit of maths just fits the image to the screen while maintaining aspect ratio)
-		BeginFrame();
-		float aspect_ratio = float(MAIN_TEXTURE_WIDTH)/float(MAIN_TEXTURE_HEIGHT);
-		float screen_aspect_ratio = 1280.f/720.f;
-		for(int texidx = 0; texidx<levels; texidx++)
-			DrawYUVTextureRect(&ytexture,&utexture,&vtexture,-1.f,-1.f,1.f,1.f,&rgbtextures[texidx]);
+		
+		//float aspect_ratio = float(MAIN_TEXTURE_WIDTH)/float(MAIN_TEXTURE_HEIGHT);
+		//float screen_aspect_ratio = 1280.f/720.f;
+		//for(int texidx = 0; texidx<levels; texidx++)
+		//	DrawYUVTextureRect(&ytexture,&utexture,&vtexture,-1.f,-1.f,1.f,1.f,&rgbtextures[texidx]);
 
 		//these are just here so we can access the yuv data cpu side - opengles doesn't let you read grey ones cos they can't be frame buffers!
-		DrawTextureRect(&ytexture,-1,-1,1,1,&yreadtexture);
-		DrawTextureRect(&utexture,-1,-1,1,1,&ureadtexture);
-		DrawTextureRect(&vtexture,-1,-1,1,1,&vreadtexture);
+		//DrawTextureRect(&ytexture,-1,-1,1,1,&yreadtexture);
+		//DrawTextureRect(&utexture,-1,-1,1,1,&ureadtexture);
+		//DrawTextureRect(&vtexture,-1,-1,1,1,&vreadtexture);
 
-		if(!do_pipeline)
+		//Show midsteps
+		if(do_pipeline)
 		{
-			if(selected_texture == -1 || &blurtexture == texture_grid[selected_texture])
-				DrawBlurredRect(&rgbtextures[1],-1.f,-1.f,1.f,1.f,&blurtexture);
+			BeginFrame();
+			//if(selected_texture == -1 || &blurtexture == texture_grid[selected_texture])
+			//	DrawBlurredRect(&rgbtextures[1],-1.f,-1.f,1.f,1.f,&blurtexture);
 
-			if(selected_texture == -1 || &sobeltexture == texture_grid[selected_texture])
-				DrawSobelRect(&rgbtextures[1],-1.f,-1.f,1.f,1.f,&sobeltexture);
+			//if(selected_texture == -1 || &sobeltexture == texture_grid[selected_texture])
+			//	DrawSobelRect(&rgbtextures[1],-1.f,-1.f,1.f,1.f,&sobeltexture);
+
+			
+			//if(selected_texture == -1 || &mediantexture == texture_grid[selected_texture])
+			//	DrawMedianRect(&rgbtextures[1],-1.f,-1.f,1.f,1.f,&mediantexture);
+
+			//if(selected_texture == -1 || &greysobeltexture == texture_grid[selected_texture])
+			//	DrawSobelRect(&ytexture,-1.f,-1.f,1.f,1.f,&greysobeltexture);
+	
+			if(selected_texture == -1 || &mediantexture == texture_grid[selected_texture])
+				DrawMedianRect(&ytexture,-1.f,-1.f,1.f,1.f,&mediantexture);
 
 			if(selected_texture == -1 || &greysobeltexture == texture_grid[selected_texture])
-				DrawSobelRect(&ytexture,-1.f,-1.f,1.f,1.f,&greysobeltexture);
+				DrawSobelRect(&mediantexture,-1.f,-1.f,1.f,1.f,&greysobeltexture);
 
-			if(selected_texture == -1 || &mediantexture == texture_grid[selected_texture])
-				DrawMedianRect(&rgbtextures[1],-1.f,-1.f,1.f,1.f,&mediantexture);
-
-			if(selected_texture == -1 || &redtexture == texture_grid[selected_texture])
+			/*if(selected_texture == -1 || &redtexture == texture_grid[selected_texture])
 				//DrawMultRect(&rgbtextures[1],-1.f,-1.f,1.f,1.f,1,0,0,&redtexture);
 
 			if(selected_texture == -1 || &dilatetexture == texture_grid[selected_texture])
@@ -325,7 +347,7 @@ int main(int argc, const char **argv)
 
 			if(selected_texture == -1 || &threshtexture == texture_grid[selected_texture])
 				//DrawThreshRect(&ytexture,-1.f,-1.f,1.f,1.f,0.25f,0.25f,0.25f,&threshtexture);
-
+			*/
 			if(selected_texture == -1)
 			{
 				for(int col = 0; col < TEXTURE_GRID_COLS; col++)
@@ -346,28 +368,29 @@ int main(int argc, const char **argv)
 				if(GfxTexture* tex = texture_grid[selected_texture])
 					DrawTextureRect(tex,-1,-1,1,1,NULL);
 			}
+			
+			EndFrame();
 		}
+		//Or just do the processing
 		else
 		{
+			clock_t begin_proc = clock();
 			DrawMedianRect(&ytexture,-1.f,-1.f,1.f,1.f,&mediantexture);
-			DrawSobelRect(&mediantexture,-1.f,-1.f,1.f,1.f,&sobeltexture);
+			printw("median time: %f\n", (float)(clock() - begin_proc)/CLOCKS_PER_SEC );
+			DrawSobelRect(&mediantexture,-1.f,-1.f,1.f,1.f,&greysobeltexture);
+			printw("sobel time: %f\n", (float)(clock() - begin_proc)/CLOCKS_PER_SEC );
 			//DrawErodeRect(&sobeltexture,-1.f,-1.f,1.f,1.f,&erodetexture);
 			//DrawDilateRect(&erodetexture,-1.f,-1.f,1.f,1.f,&dilatetexture);
 			//DrawThreshRect(&erodetexture,-1.f,-1.f,1.f,1.f,0.05f,0.05f,0.05f,&threshtexture);
 			//DrawTextureRect(&threshtexture,-1,-1,1,1,NULL);
 		}
-	
-		clock_t write_start = clock();	
-		blurtexture.Save("tex_blur.png", "blur");
-		sobeltexture.Save("tex_sobel.png", "sobel");
-
-		
-		printf("time passed for writing image: %f\n", (float)(clock() - write_start)/CLOCKS_PER_SEC );
-
-		EndFrame();
+		if (debug){
+			mediantexture.Save("tex_blur.png", "blur");
+			outputImage = greysobeltexture.Save("tex_sobel.png", "sobel");	
+		}
 
 		//read current time
-		clock_gettime(CLOCK_REALTIME, &gettime_now);
+		/*clock_gettime(CLOCK_REALTIME, &gettime_now);
 		time_difference = gettime_now.tv_nsec - start_time;
 		if(time_difference < 0) time_difference += 1000000000;
 		total_time_s += double(time_difference)/1000000000.0;
@@ -380,11 +403,12 @@ int main(int argc, const char **argv)
 			mvprintw(0,0,"Framerate: %g\n",fr);
 			move(0,0);
 			refresh();
-		}
-		printf("time passed for whole frame: %f\n", (float)(clock() - read_start)/CLOCKS_PER_SEC );
+		}*/
+		printw("time passed for whole frame: %f\n", (float)(clock() - read_start)/CLOCKS_PER_SEC );
 	}
 
-	StopCamera();
+	//StopCamera();
 
+	//End curses library
 	endwin();
 }
