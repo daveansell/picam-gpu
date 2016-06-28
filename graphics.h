@@ -65,7 +65,7 @@ public:
 	int GetWidth() {return Width;}
 	int GetHeight() {return Height;}
 	//void Save(const char* fname);
-	cv::Mat Save(const char* fname, std::string type);
+	cv::Mat Save(const char* fname, std::string type, void * image);
 };
 
 void SaveFrameBuffer(const char* fname);

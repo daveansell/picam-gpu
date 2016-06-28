@@ -11,7 +11,7 @@
 #include <dirent.h>
 #include <omp.h>
 
-#define debug 0
+#define debug 1
 
 #define PIC_WIDTH 2592
 #define PIC_HEIGHT 1944
@@ -25,7 +25,7 @@
 const int MAIN_TEXTURE_WIDTH = PIC_WIDTH*WSIZE;
 const int MAIN_TEXTURE_HEIGHT = PIC_HEIGHT*HSIZE;
 
-#define TEXTURE_GRID_COLS 1
+#define TEXTURE_GRID_COLS 2
 #define TEXTURE_GRID_ROWS 2
 #define LOAD_ERROR -1
 
@@ -53,8 +53,8 @@ int main(int argc, const char **argv)
 	GfxTexture ytexture, greysobeltexture, mediantexture;
 	GfxTexture ytexture2, greysobeltexture2, mediantexture2;
 	//GfxTexture utexture,vtexture,rgbtextures[32],blurtexture,sobeltexture,redtexture,dilatetexture,erodetexture,threshtexture;
-	ytexture.CreateGreyScale(MAIN_TEXTURE_WIDTH,MAIN_TEXTURE_HEIGHT);
-	ytexture2.CreateGreyScale(MAIN_TEXTURE_WIDTH,MAIN_TEXTURE_HEIGHT);
+	ytexture.CreateGreyScale(PIC_WIDTH/2,MAIN_TEXTURE_HEIGHT);
+	ytexture2.CreateGreyScale(PIC_WIDTH/2,MAIN_TEXTURE_HEIGHT);
 		
 	//utexture.CreateGreyScale(MAIN_TEXTURE_WIDTH/2,MAIN_TEXTURE_HEIGHT/2);
 	//vtexture.CreateGreyScale(MAIN_TEXTURE_WIDTH/2,MAIN_TEXTURE_HEIGHT/2);
@@ -96,19 +96,19 @@ int main(int argc, const char **argv)
 	sobeltexture.GenerateFrameBuffer();
 	texture_grid[1] = &sobeltexture;
 	*/
-	greysobeltexture.CreateRGBA(MAIN_TEXTURE_WIDTH, MAIN_TEXTURE_HEIGHT);
+	greysobeltexture.CreateRGBA(PIC_WIDTH/2, MAIN_TEXTURE_HEIGHT);
 	greysobeltexture.GenerateFrameBuffer();
 	texture_grid[0] = &greysobeltexture;
 
-	greysobeltexture2.CreateRGBA(MAIN_TEXTURE_WIDTH ,MAIN_TEXTURE_HEIGHT);
+	greysobeltexture2.CreateRGBA(PIC_WIDTH/2, MAIN_TEXTURE_HEIGHT);
 	greysobeltexture2.GenerateFrameBuffer();
 	texture_grid[1] = &greysobeltexture2;
 
-	mediantexture.CreateRGBA(MAIN_TEXTURE_WIDTH,MAIN_TEXTURE_HEIGHT);
+	mediantexture.CreateRGBA(PIC_WIDTH/2, MAIN_TEXTURE_HEIGHT);
 	mediantexture.GenerateFrameBuffer();
 	texture_grid[2] = &mediantexture;
 
-	mediantexture2.CreateRGBA(MAIN_TEXTURE_WIDTH,MAIN_TEXTURE_HEIGHT);
+	mediantexture2.CreateRGBA(PIC_WIDTH/2, MAIN_TEXTURE_HEIGHT);
 	mediantexture2.GenerateFrameBuffer();
 	texture_grid[3] = &mediantexture2;
 	//THOSE ARE INTERESTING//
@@ -154,9 +154,10 @@ int main(int argc, const char **argv)
 
 	// MY CODE TRYING TO DO SOMETHING
 	void *pic_data;
+	void *pic_data2;
 	//loadImage("background.jpg", pic_data);
 	Mat image = imread("background.jpg");
-	Mat outputImage;
+	Mat outputImage, concat1, concat2;
 	//cvtColor(image, image, CV_BGR2GRAY);
 	if (image.empty()){
 		cout << "reference image not found" << endl;
@@ -167,7 +168,8 @@ int main(int argc, const char **argv)
 	//printf("image.total: %d, image.rows*i + j: %d\n", imgSize, image.rows*image.cols);
 
 	//Allocate buffers for pixel Data and U and V fillings
-	uchar * pixelData = new uchar[imgSize];
+	uchar * pixelData = new uchar[imgSize/2];
+	uchar * pixelData2 = new uchar[imgSize/2];
 	//uchar * y = new uchar[imgSize];
 	//uchar * u = new uchar[imgSize];
 	//uchar * v = new uchar[imgSize];
@@ -178,8 +180,6 @@ int main(int argc, const char **argv)
 			zeros[image.cols*i + j] = 125;
 		}
 
-	pic_data = (void*)pixelData;
-	
 
 
 	//Sort files 
@@ -220,7 +220,7 @@ int main(int argc, const char **argv)
 		clock_t read_start = clock();
 		image = imread(string(input_dir) + "/" + file, 1);
 		
-		resize(image, image, Size(), WSIZE, HSIZE);
+		//resize(image, image, Size(), WSIZE, HSIZE);
 		cvtColor(image, image, CV_BGR2GRAY);
 				
 		if (image.empty()){
@@ -229,15 +229,19 @@ int main(int argc, const char **argv)
 		}
 		
 		// Pre load pixel data
-		//printf("starting pixel data filling\n");
+		printw("starting pixel data filling\n");
 		for(int i = 0; i < MAIN_TEXTURE_HEIGHT; i++){
-			for(int j = 0; j < MAIN_TEXTURE_WIDTH; j++){
-				pixelData[MAIN_TEXTURE_WIDTH*i + j] = image.at<uchar>(i, j);
+			for(int j = 0; j < PIC_WIDTH; j++){
+				if (j < PIC_WIDTH/2)
+					pixelData[PIC_WIDTH/2*i + j] = image.at<uchar>(i, j);
+				else
+					pixelData2[PIC_WIDTH/2*i + (j - PIC_WIDTH/2)] = image.at<uchar>(i, j);	
 			}		
 		}
-		//printf("after pixel data\n");		
+		printw("after pixel data\n");		
 
 		pic_data = (void*)pixelData;
+		pic_data2 = (void*)pixelData2;
 		printw("time passed for reading image: %f\n", (float)(clock() - read_start)/CLOCKS_PER_SEC );
 
 		int ch = getch();
@@ -259,10 +263,10 @@ int main(int argc, const char **argv)
 				//vreadtexture.Save("tex_v.png");
 				//rgbtextures[0].Save("tex_rgb_hi.png");
 				//rgbtextures[levels-1].Save("tex_rgb_low.png");
-				mediantexture.Save("tex_blur.png", "blur");
+				//mediantexture.Save("tex_blur.png", "blur", image);
 				//blurtexture.Save("tex_blur.png", "blur");
 				//sobeltexture.Save("tex_sobel.png", "sobel");
-				greysobeltexture.Save("tex_sobel.png", "sobel");				
+				//greysobeltexture.Save("tex_sobel.png", "sobel", image);				
 				//dilatetexture.Save("tex_dilate.png");
 				//erodetexture.Save("tex_erode.png");
 				//threshtexture.Save("tex_thresh.png");
@@ -280,7 +284,7 @@ int main(int argc, const char **argv)
 		{
 			//const uint8_t* data = (const uint8_t*)frame_data;
 			const uint8_t* data = (const uint8_t*)pic_data;
-
+			const uint8_t* data2 = (const uint8_t*)pic_data2;
 			//int ypitch = MAIN_TEXTURE_WIDTH;
 			//int ysize = ypitch*MAIN_TEXTURE_HEIGHT;
 			//int uvpitch = MAIN_TEXTURE_WIDTH/2;
@@ -294,6 +298,7 @@ int main(int argc, const char **argv)
 			//int vpos = 0;
 			//printf("Frame data len: 0x%x, ypitch: 0x%x ysize: 0x%x, uvpitch: 0x%x, uvsize: 0x%x, u at 0x%x, v at 0x%x, total 0x%x\n", frame_sz, ypitch, ysize, uvpitch, uvsize, upos, vpos, vpos+uvsize);
 			ytexture.SetPixels(data);
+			ytexture2.SetPixels(data2);
 			//utexture.SetPixels(data+upos);
 			//utexture.SetPixels(zeros);
 			//vtexture.SetPixels(data+vpos);
@@ -332,10 +337,14 @@ int main(int argc, const char **argv)
 	
 			if(selected_texture == -1 || &mediantexture == texture_grid[selected_texture])
 				DrawMedianRect(&ytexture,-1.f,-1.f,1.f,1.f,&mediantexture);
+			if(selected_texture == -1 || &mediantexture2 == texture_grid[selected_texture])
+				DrawMedianRect(&ytexture2,-1.f,-1.f,1.f,1.f,&mediantexture2);
+			
 
 			if(selected_texture == -1 || &greysobeltexture == texture_grid[selected_texture])
 				DrawSobelRect(&mediantexture,-1.f,-1.f,1.f,1.f,&greysobeltexture);
-
+			if(selected_texture == -1 || &greysobeltexture2 == texture_grid[selected_texture])
+				DrawSobelRect(&mediantexture2,-1.f,-1.f,1.f,1.f,&greysobeltexture2);
 			/*if(selected_texture == -1 || &redtexture == texture_grid[selected_texture])
 				//DrawMultRect(&rgbtextures[1],-1.f,-1.f,1.f,1.f,1,0,0,&redtexture);
 
@@ -379,16 +388,27 @@ int main(int argc, const char **argv)
 			printw("median time: %f\n", (float)(clock() - begin_proc)/CLOCKS_PER_SEC );
 			DrawSobelRect(&mediantexture,-1.f,-1.f,1.f,1.f,&greysobeltexture);
 			printw("sobel time: %f\n", (float)(clock() - begin_proc)/CLOCKS_PER_SEC );
+			
+			DrawMedianRect(&ytexture2,-1.f,-1.f,1.f,1.f,&mediantexture2);
+			printw("median time: %f\n", (float)(clock() - begin_proc)/CLOCKS_PER_SEC );
+			DrawSobelRect(&mediantexture2,-1.f,-1.f,1.f,1.f,&greysobeltexture2);
+			printw("sobel time: %f\n", (float)(clock() - begin_proc)/CLOCKS_PER_SEC );
 			//DrawErodeRect(&sobeltexture,-1.f,-1.f,1.f,1.f,&erodetexture);
 			//DrawDilateRect(&erodetexture,-1.f,-1.f,1.f,1.f,&dilatetexture);
 			//DrawThreshRect(&erodetexture,-1.f,-1.f,1.f,1.f,0.05f,0.05f,0.05f,&threshtexture);
 			//DrawTextureRect(&threshtexture,-1,-1,1,1,NULL);
 		}
 		if (debug){
-			mediantexture.Save("tex_blur.png", "blur");
-			outputImage = greysobeltexture.Save("tex_sobel.png", "sobel");	
+			void * sobel1 = malloc(greysobeltexture.GetWidth()*greysobeltexture.GetHeight()*4);
+			void * sobel2 = malloc(greysobeltexture.GetWidth()*greysobeltexture.GetHeight()*4);
+			mediantexture.Save("tex_blur.png", "blur", NULL);
+			mediantexture2.Save("tex_blur2.png", "blur", NULL);
+			concat1 = greysobeltexture.Save("tex_sobel.png", "sobel", sobel1);
+			concat2 = greysobeltexture2.Save("tex_sobel2.png", "sobel", sobel2);	
+			hconcat(concat1, concat2, outputImage);		
+			imwrite("out.jpg", outputImage);		
 		}
-
+		
 		//read current time
 		/*clock_gettime(CLOCK_REALTIME, &gettime_now);
 		time_difference = gettime_now.tv_nsec - start_time;

@@ -728,11 +728,12 @@ void SaveFrameBuffer(const char* fname)
 
 }
 
-Mat GfxTexture::Save(const char* fname, std::string type)
+Mat GfxTexture::Save(const char* fname, std::string type, void * image)
 {
 	std::ostringstream buffer;
 	static int ncalls;
-	void* image = malloc(Width*Height*4);
+	if (image == NULL)
+		image = malloc(Width*Height*4);	
 	glBindFramebuffer(GL_FRAMEBUFFER,FramebufferId);
 	check();
 	glReadPixels(0,0,Width,Height,IsRGBA ? GL_RGBA : GL_LUMINANCE, GL_UNSIGNED_BYTE, image);
@@ -755,6 +756,5 @@ Mat GfxTexture::Save(const char* fname, std::string type)
 			printf("error: %d\n",error);
 		*/
 	}
-	free(image);
 	return cvImage;
 }
