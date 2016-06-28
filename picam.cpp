@@ -11,7 +11,7 @@
 #include <dirent.h>
 #include <omp.h>
 
-#define debug 1
+
 
 #define PIC_WIDTH 2592
 #define PIC_HEIGHT 1944
@@ -21,6 +21,7 @@
 
 //#define MAIN_TEXTURE_WIDTH PIC_WIDTH*DSIZE
 //#define MAIN_TEXTURE_HEIGHT PIC_HEIGHT*DSIZE
+
 
 const int MAIN_TEXTURE_WIDTH = PIC_WIDTH*WSIZE;
 const int MAIN_TEXTURE_HEIGHT = PIC_HEIGHT*HSIZE;
@@ -39,7 +40,16 @@ bool ends_with(const std::string &suffix, const std::string &str)
 {
     return str.size() >= suffix.size() && str.compare(str.size() - suffix.size(), suffix.size(), suffix) == 0;
 }
-//entry point
+
+
+/*Intended pipeline of this function: 
+	-Get image (read or camera) (ok)
+	-Background subtract (?)
+	-Blur (ok, kernel size?)
+	-Edge (sobel working, need canny)
+	-Hough (have implementation in graphics.cpp, not tested)
+	-Return circles
+*/
 int main(int argc, const char **argv)
 {
 	//initialize graphics and the camera
@@ -70,7 +80,6 @@ int main(int argc, const char **argv)
 	GfxTexture* texture_grid[TEXTURE_GRID_COLS*TEXTURE_GRID_ROWS];
 	memset(texture_grid,0,sizeof(texture_grid));
 	int next_texture_grid_entry = 0;
-
 	//texture_grid[next_texture_grid_entry++] = &ytexture;
 	//texture_grid[next_texture_grid_entry++] = &utexture;
 	//texture_grid[next_texture_grid_entry++] = &vtexture;
@@ -111,6 +120,7 @@ int main(int argc, const char **argv)
 	mediantexture2.CreateRGBA(PIC_WIDTH/2, MAIN_TEXTURE_HEIGHT);
 	mediantexture2.GenerateFrameBuffer();
 	texture_grid[3] = &mediantexture2;
+	
 	//THOSE ARE INTERESTING//
 /*
 	redtexture.CreateRGBA(MAIN_TEXTURE_WIDTH/2,MAIN_TEXTURE_HEIGHT/2);
@@ -135,16 +145,17 @@ int main(int argc, const char **argv)
 	int selected_texture = -1;
 
 	printf("Running frame loop\n");
-
+	
 	//read start time
-	long int start_time;
+	/*long int start_time;
 	long int time_difference;
 	struct timespec gettime_now;
 	clock_gettime(CLOCK_REALTIME, &gettime_now);
 	start_time = gettime_now.tv_nsec ;
 	double total_time_s = 0;
+	*/	
 	bool do_pipeline = false;
-
+	
 	initscr();      /* initialize the curses library */
 	keypad(stdscr, TRUE);  /* enable keyboard mapping */
 	nonl();         /* tell curses not to do NL->CR/NL on output */
@@ -158,6 +169,7 @@ int main(int argc, const char **argv)
 	//loadImage("background.jpg", pic_data);
 	Mat image = imread("background.jpg");
 	Mat outputImage, concat1, concat2;
+	Mat centres;
 	//cvtColor(image, image, CV_BGR2GRAY);
 	if (image.empty()){
 		cout << "reference image not found" << endl;
@@ -174,12 +186,11 @@ int main(int argc, const char **argv)
 	//uchar * u = new uchar[imgSize];
 	//uchar * v = new uchar[imgSize];
 	uchar* zeros = new uchar[imgSize];
-
+	
 	for(int i =0; i < image.rows; i++)
 		for(int j = 0; j < image.cols; j++){
 			zeros[image.cols*i + j] = 125;
 		}
-
 
 
 	//Sort files 
@@ -215,6 +226,9 @@ int main(int argc, const char **argv)
 	//Fixes bit allignment problems
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glPixelStorei(GL_PACK_ALIGNMENT, 1);
+	
+	void * sobel1 = malloc(greysobeltexture.GetWidth()*greysobeltexture.GetHeight()*4);
+	void * sobel2 = malloc(greysobeltexture.GetWidth()*greysobeltexture.GetHeight()*4);
 	for (String file : image_files)
 	{	
 		clock_t read_start = clock();
@@ -345,6 +359,8 @@ int main(int argc, const char **argv)
 				DrawSobelRect(&mediantexture,-1.f,-1.f,1.f,1.f,&greysobeltexture);
 			if(selected_texture == -1 || &greysobeltexture2 == texture_grid[selected_texture])
 				DrawSobelRect(&mediantexture2,-1.f,-1.f,1.f,1.f,&greysobeltexture2);
+
+			
 			/*if(selected_texture == -1 || &redtexture == texture_grid[selected_texture])
 				//DrawMultRect(&rgbtextures[1],-1.f,-1.f,1.f,1.f,1,0,0,&redtexture);
 
@@ -388,7 +404,6 @@ int main(int argc, const char **argv)
 			printw("median time: %f\n", (float)(clock() - begin_proc)/CLOCKS_PER_SEC );
 			DrawSobelRect(&mediantexture,-1.f,-1.f,1.f,1.f,&greysobeltexture);
 			printw("sobel time: %f\n", (float)(clock() - begin_proc)/CLOCKS_PER_SEC );
-			
 			DrawMedianRect(&ytexture2,-1.f,-1.f,1.f,1.f,&mediantexture2);
 			printw("median time: %f\n", (float)(clock() - begin_proc)/CLOCKS_PER_SEC );
 			DrawSobelRect(&mediantexture2,-1.f,-1.f,1.f,1.f,&greysobeltexture2);
@@ -398,17 +413,23 @@ int main(int argc, const char **argv)
 			//DrawThreshRect(&erodetexture,-1.f,-1.f,1.f,1.f,0.05f,0.05f,0.05f,&threshtexture);
 			//DrawTextureRect(&threshtexture,-1,-1,1,1,NULL);
 		}
-		if (debug){
-			void * sobel1 = malloc(greysobeltexture.GetWidth()*greysobeltexture.GetHeight()*4);
-			void * sobel2 = malloc(greysobeltexture.GetWidth()*greysobeltexture.GetHeight()*4);
-			mediantexture.Save("tex_blur.png", "blur", NULL);
-			mediantexture2.Save("tex_blur2.png", "blur", NULL);
+		
+			clock_t debug_time = clock();
+			if (debug){			
+				mediantexture.Save("tex_blur.png", "blur", NULL);
+				mediantexture2.Save("tex_blur2.png", "blur", NULL);
+			}			
 			concat1 = greysobeltexture.Save("tex_sobel.png", "sobel", sobel1);
 			concat2 = greysobeltexture2.Save("tex_sobel2.png", "sobel", sobel2);	
 			hconcat(concat1, concat2, outputImage);		
-			imwrite("out.jpg", outputImage);		
-		}
-		
+			if (debug) imwrite("out.jpg", outputImage);	
+			printw("concat time: %f\n", (float)(clock() - debug_time)/CLOCKS_PER_SEC );	
+			
+			clock_t hought = clock();
+			//HoughTransform(outputImage, centres);
+			printw("hough time: %f\n", (float)(clock() - hought)/CLOCKS_PER_SEC );	
+			
+			
 		//read current time
 		/*clock_gettime(CLOCK_REALTIME, &gettime_now);
 		time_difference = gettime_now.tv_nsec - start_time;
@@ -428,7 +449,8 @@ int main(int argc, const char **argv)
 	}
 
 	//StopCamera();
-
+	free(sobel1);
+	free(sobel2);
 	//End curses library
 	endwin();
 }

@@ -12,15 +12,18 @@
 #include "graphics.h"
 
 #define check() assert(glGetError() == 0)
-#define debug 1
+
 
 using namespace cv;
+using namespace std;
 
 uint32_t GScreenWidth;
 uint32_t GScreenHeight;
 EGLDisplay GDisplay;
 EGLSurface GSurface;
 EGLContext GContext;
+
+
 
 GfxShader GSimpleVS;
 GfxShader GSimpleFS;
@@ -32,6 +35,8 @@ GfxShader GMultFS;
 GfxShader GThreshFS;
 GfxShader GDilateFS;
 GfxShader GErodeFS;
+
+
 GfxProgram GSimpleProg;
 GfxProgram GYUVProg;
 GfxProgram GBlurProg;
@@ -161,6 +166,8 @@ void InitGraphics()
 	GThreshProg.Create(&GSimpleVS,&GThreshFS);
 	GDilateProg.Create(&GSimpleVS,&GDilateFS);
 	GErodeProg.Create(&GSimpleVS,&GErodeFS);
+
+
 	check();
 
 	//create an ickle vertex buffer
@@ -572,6 +579,7 @@ void DrawSobelRect(GfxTexture* texture, float x0, float y0, float x1, float y1, 
 }
 
 
+
 void DrawMedianRect(GfxTexture* texture, float x0, float y0, float x1, float y1, GfxTexture* render_target)
 {
 	if(render_target)
@@ -737,7 +745,6 @@ Mat GfxTexture::Save(const char* fname, std::string type, void * image)
 	glBindFramebuffer(GL_FRAMEBUFFER,FramebufferId);
 	check();
 	glReadPixels(0,0,Width,Height,IsRGBA ? GL_RGBA : GL_LUMINANCE, GL_UNSIGNED_BYTE, image);
-	//glReadPixels(0,0,Width,Height, GL_RGBA, GL_UNSIGNED_BYTE, image);
 	check();
 	glBindFramebuffer(GL_FRAMEBUFFER,0);
 
@@ -757,4 +764,50 @@ Mat GfxTexture::Save(const char* fname, std::string type, void * image)
 		*/
 	}
 	return cvImage;
+}
+
+vector<Point> createCircle(){
+	Mat Z = Mat::zeros(100,100, CV_8UC1);
+	circle(Z, Point(50,50), 50, Scalar(255,255,255));
+	vector<Point> circle;
+	findNonZero(Z, circle);
+	return circle;
+}
+
+Mat getSaturation(Mat& in){
+	Mat out = Mat::zeros(in.size(), CV_8UC1);
+	for(int row = 0; row < in.rows; ++row) {
+		uchar* p = in.ptr(row);
+		for(int col = 0; col < in.cols; ++col) {
+			uchar s = max(p[0],max(p[1],p[2]))-min(p[0],min(p[1],p[2]));
+			out.at<uchar>(row,col)=s;
+			p += 3;
+		}
+	}
+	return out;
+}
+
+void HoughTransform(Mat edges, Mat centres){
+	//Mat centres = Mat::zeros(edges.size(), CV_8UC1);
+	vector<Point> circle = createCircle();
+	Rect rect(Point(), edges.size());
+
+	for(int row = 0; row < edges.rows; ++row) {
+		uchar* p = edges.ptr(row);
+		for(int col = 0; col < edges.cols; ++col) {
+			if (*p++ == 255){	
+				//Point2d rc = screenToReal(Point2d(col,row)); << TODO UNCOMMENT WHEN MERGE HAPPENS
+				Point2d rc = Point2d(col,row);
+				for (vector<Point>::iterator it = circle.begin(); it != circle.end(); ++it){
+					Point2d pt((*it).x*1.44+rc.x,(*it).y*1.44+rc.y);
+					//if (rect.contains(pt)) centres.at<uchar>(realToScreen(pt))++; TODO UNCOMMENT WHEN MERGE HAPPENS
+					if (rect.contains(pt)) centres.at<uchar>(pt)++;				
+				}
+			} 
+		}
+	}
+
+//namedWindow( "Display window", WINDOW_AUTOSIZE );// Create a window for display.
+//imshow( "Display window", centres );                   // Show our image inside it.
+                                      // Wait for a keystroke in the window
 }

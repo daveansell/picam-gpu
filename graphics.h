@@ -2,10 +2,21 @@
 
 #include <opencv2/opencv.hpp>
 #include <string>
+
+
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <iostream>
+#include <algorithm>
+#include <time.h>
+
 #include "GLES2/gl2.h"
 #include "EGL/egl.h"
 #include "EGL/eglext.h"
 #include "lodepng.h"
+
+#define debug 0
 
 void InitGraphics();
 void ReleaseGraphics();
@@ -79,3 +90,7 @@ void DrawMultRect(GfxTexture* texture, float x0, float y0, float x1, float y1, f
 void DrawThreshRect(GfxTexture* texture, float x0, float y0, float x1, float y1, float r, float g, float b, GfxTexture* render_target);
 void DrawDilateRect(GfxTexture* texture, float x0, float y0, float x1, float y1, GfxTexture* render_target);
 void DrawErodeRect(GfxTexture* texture, float x0, float y0, float x1, float y1, GfxTexture* render_target);
+
+cv::Mat getSaturation(cv::Mat& in);
+void HoughTransform(cv::Mat edges, cv::Mat centres);
+std::vector<cv::Point> createCircle();
