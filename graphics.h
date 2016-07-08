@@ -16,7 +16,7 @@
 #include "EGL/eglext.h"
 #include "lodepng.h"
 
-#define debug 1
+#define debug 0
 
 void InitGraphics();
 void ReleaseGraphics();
