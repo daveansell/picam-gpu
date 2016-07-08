@@ -166,6 +166,7 @@ int main(int argc, const char **argv)
 	// MY CODE TRYING TO DO SOMETHING
 	void *pic_data;
 	void *pic_data2;
+	vector<Mat> channels;
 	//loadImage("background.jpg", pic_data);
 	Mat image = imread("background.jpg");
 	Mat outputImage, concat1, concat2;
@@ -235,7 +236,9 @@ int main(int argc, const char **argv)
 		image = imread(string(input_dir) + "/" + file, 1);
 		
 		//resize(image, image, Size(), WSIZE, HSIZE);
-		cvtColor(image, image, CV_BGR2GRAY);
+		cvtColor(image, image, CV_BGR2HSV);
+		split(image, channels);
+		image = channels[1];
 				
 		if (image.empty()){
 			cout << "image not found" << endl;
@@ -412,8 +415,7 @@ int main(int argc, const char **argv)
 			//DrawDilateRect(&erodetexture,-1.f,-1.f,1.f,1.f,&dilatetexture);
 			//DrawThreshRect(&erodetexture,-1.f,-1.f,1.f,1.f,0.05f,0.05f,0.05f,&threshtexture);
 			//DrawTextureRect(&threshtexture,-1,-1,1,1,NULL);
-		}
-		
+
 			clock_t debug_time = clock();
 			if (debug){			
 				mediantexture.Save("tex_blur.png", "blur", NULL);
@@ -428,6 +430,9 @@ int main(int argc, const char **argv)
 			clock_t hought = clock();
 			//HoughTransform(outputImage, centres);
 			printw("hough time: %f\n", (float)(clock() - hought)/CLOCKS_PER_SEC );	
+			
+		}
+		
 			
 			
 		//read current time

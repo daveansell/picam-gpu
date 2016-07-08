@@ -23,7 +23,8 @@ EGLDisplay GDisplay;
 EGLSurface GSurface;
 EGLContext GContext;
 
-
+GfxShader GCannyFS;
+GfxProgram GCannyProg;
 
 GfxShader GSimpleVS;
 GfxShader GSimpleFS;
@@ -167,6 +168,9 @@ void InitGraphics()
 	GDilateProg.Create(&GSimpleVS,&GDilateFS);
 	GErodeProg.Create(&GSimpleVS,&GErodeFS);
 
+	
+	//GCannyFS.LoadFragmentShader("canny.glsl");
+	//GCannyProg.Create(&GSimpleVS,&GCannyFS);
 
 	check();
 
