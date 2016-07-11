@@ -1,39 +1,22 @@
 #include <stdio.h>
 #include <unistd.h>
 #include "camera.h"
-#include "graphics.h"
 #include <time.h>
 #include <curses.h>
 #include <iostream>
-#include <string>
-#include <opencv2/opencv.hpp>
 #include <sys/types.h>
 #include <dirent.h>
 #include <omp.h>
 #include "gpu.hpp"
 
-
-
-#define PIC_WIDTH 2592
-#define PIC_HEIGHT 1944
-
-#define HSIZE 1
-#define WSIZE 0.79012345678901234 //scales pic to maximum texture width, not in use.
-
 //#define MAIN_TEXTURE_WIDTH PIC_WIDTH*DSIZE
 //#define MAIN_TEXTURE_HEIGHT PIC_HEIGHT*DSIZE
-
-
-
-
-#define LOAD_ERROR -1
-
 
 using namespace std;
 using namespace cv;
 
 //Input: Saturation channel from HSV image
-void GPU::imageToGpu(Mat image){
+void GPU::imageToGpu(){
 	clock_t read_start = clock();
 	
 	// Pre load pixel data
@@ -125,7 +108,6 @@ GPU::GPU(string referencePath){
 	
 	if (background.empty()){
 		cout << "reference image not found" << endl;
-		return LOAD_ERROR; 	
 	}
 	int imgSize = background.total();
 	
@@ -157,10 +139,10 @@ GPU::~GPU(){
 	clean();
 }
 
-void runGpu(string imagePath){
+void GPU::runGpu(){
 	
 	//
-	imageToGpu(image);
+	imageToGpu();
 	gpuBlur();
 	
 	//gpuEdge();
@@ -172,8 +154,10 @@ int main(){
 	GPU gpu("background.jpg");
 
 	//Suppose those are rock cv steps
-	cvtColor(background, image, CV_BGR2GRAY);
+	cvtColor(gpu.background, gpu.image, CV_BGR2GRAY);
 
 	//Not going to work
 	gpu.runGpu();
+
+	imwrite("class.jpg", gpu.getGpuOutput());	
 }
