@@ -1,0 +1,98 @@
+Pre SSD: Experiments results and progress
+
+8/4/1 106 shots
+8/5/1 76 shots
+
+Everything else really doesnt matter
+
+23: Doing REAL manual groundtruth
+	Should be done before meeting: 
+		statistical output based on groundtruth
+		crude point distance shape detection (no use yet)
+		propose: use of higher level features
+
+			being used: position/time (frames) 
+			suggestions: number of rocks, sweepers 
+			next topic, GPU utilization on PI?
+
+24: Finish shot detection as fast as you can and have something on the GPU use.
+
+	Shot detection is not as good as you think after implementing 		falses detection
+	Check individually each reported false negative and think how you 	  can make the tracking better.
+	Should use this week to refine the thing. 
+
+25: Trying to make view more narrow and ignore small things to make the algorithm better
+
+	no false negatives, shot detection finished?
+
+26: Need to do now: -GPU optimization on PI
+		    -Integrate circle detection 
+
+Opencv methods for circle detection works fine without perspective warp and undistortion...
+
+Wasted some time making test code run in current build, its very slow! Ask villiam about this
+
+27: Making tests with different parameters while trying to do cross compilation with pi
+
+	Found the best parameters, will need the PI to try the GPU code.
+	
+	Trying to get faster and simples circle detection working, gonna implement my thing from zero.
+
+30: get satistics for findRocksCircles
+
+
+	blur taking .4 of executing time.
+	undistort/perspective take .6
+	hough takes .3
+	the rest takes .2
+	taking statistics of circle detection 
+	done. in log file. its pretty gooood.
+	
+31:
+	-shot working nice with 90%+ efficiency and no false negatives, need to try on another game
+	-color is not working correctly on the circles detection, probably parameters
+	-report timing found on the newest method, 2/3 is color filtering blur is heavy with kernel 11
+	-circle detection works nice without distortion and perspective, report results
+	-color filtering doesnt work well at all, worse without perspective correction.
+	-(suggestion) try to fit ellipses on color filtered result instead of using hough transform?
+	
+	next week goal: 
+		try to correct perspective parameters?
+		run statistics ignoring occluded rocks, looking for false negatives and false positives.
+		with and without perspective correction. 
+		leave color for after that, focus on circle detection improvements now
+		
+2:
+	perspective corrected,
+	statistics collected for unprep and preped images
+	preped images have 97% accuracy of rock detection while non preped have 86%
+	is the 10% loss in accuracy worht it over double speed?
+	
+7: 
+	meeting results:
+	try to get data of blur and canny running on gpu on pi
+	finish my color detection code
+	
+13: 
+	color detection finished, almost same precision as circle detection
+	still have to get gpu results
+	
+14: 
+	circle detection perfomance: 98%
+	color detection perfomance: 95%
+	
+	circle detection perfomance perpective correction: 88% (50% faster)
+	
+	GPU Perfomance: still on work
+	
+27:	finish split image work, insert code into the original pipeline
+	also: get GPU hough, GPU canny
+	
+28: dont insert now, get 11 blur and canny working on gpu.
+	get the data to do do an end log using your tools, (rock view), due tomorrow.
+	
+	
+	 
+
+
+

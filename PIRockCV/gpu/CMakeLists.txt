@@ -1,0 +1,15 @@
+cmake_minimum_required(VERSION 2.8)
+project( picam )
+
+find_package( OpenCV REQUIRED )
+include_directories(/opt/vc/include)
+include_directories(/opt/vc/userland-master/interface/vcos)
+include_directories(/opt/vc/userland-master)
+include_directories(/opt/vc/userland-master/interface/vcos/pthreads)
+include_directories(/opt/vc/userland-master/interface/vmcs_host/linux)
+include_directories(/opt/vc/userland-master/host_applications/linux/libs/bcm_host/include)
+link_directories(/opt/vc/lib)
+add_executable(picam gpu.cpp camera.cpp cameracontrol.cpp graphics.cpp lodepng.cpp)
+
+target_link_libraries(picam libmmal_core.so libmmal_util.so libmmal_vc_client.so libvcos.so libbcm_host.so GLESv2 EGL ncurses ${OpenCV_LIBS})
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -std=c++11 -g -fopenmp")

@@ -1,0 +1,1144 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"f",
+				"false"
+			],
+			[
+				"enable",
+				"enableGPU"
+			],
+			[
+				"enalb",
+				"enableGPU"
+			],
+			[
+				"enabl",
+				"enableGPU"
+			],
+			[
+				"float",
+				"float"
+			],
+			[
+				"yellow",
+				"yellowRock"
+			],
+			[
+				"to",
+				"toString"
+			],
+			[
+				"is",
+				"isRedFirst"
+			],
+			[
+				"Is",
+				"IsRedFirst"
+			],
+			[
+				"else",
+				"else"
+			],
+			[
+				"fillin",
+				"fillingPercentage"
+			],
+			[
+				"yell",
+				"yellowRock"
+			],
+			[
+				"img",
+				"img"
+			],
+			[
+				"height",
+				"heightAndWidth"
+			],
+			[
+				"BLUE",
+				"BLUE"
+			],
+			[
+				"blurred",
+				"blurred_red"
+			],
+			[
+				"debug",
+				"debugImgShow"
+			],
+			[
+				"same",
+				"sameRegionCount"
+			],
+			[
+				"DETE",
+				"DETECT_RELIABILITY"
+			],
+			[
+				"NUM",
+				"PARTS_NUM"
+			],
+			[
+				"SHOT_",
+				"SHOT_DOWNSCALING"
+			],
+			[
+				"track",
+				"trackingPos"
+			],
+			[
+				"fra",
+				"frameCount"
+			],
+			[
+				"shot",
+				"shotNumber"
+			],
+			[
+				"true",
+				"trueShots"
+			],
+			[
+				"b",
+				"b"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "/home/diedre/git/vision/PIRockCV/camera_constants.cpp",
+			"settings":
+			{
+				"buffer_size": 3156,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/home/diedre/git/vision/PIRockCV/camera_constants.hpp",
+			"settings":
+			{
+				"buffer_size": 1308,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/home/diedre/git/vision/PIRockCV/camera_transforms.cpp",
+			"settings":
+			{
+				"buffer_size": 2147,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/home/diedre/git/vision/PIRockCV/camera_transforms.hpp",
+			"settings":
+			{
+				"buffer_size": 478,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/home/diedre/git/vision/PIRockCV/debug.txt",
+			"settings":
+			{
+				"buffer_size": 1793,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/home/diedre/git/vision/PIRockCV/ends.cpp",
+			"settings":
+			{
+				"buffer_size": 5621,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/home/diedre/git/vision/PIRockCV/ends.hpp",
+			"settings":
+			{
+				"buffer_size": 1326,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/home/diedre/git/vision/PIRockCV/kalman.cpp",
+			"settings":
+			{
+				"buffer_size": 4161,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/home/diedre/git/vision/PIRockCV/kalman.hpp",
+			"settings":
+			{
+				"buffer_size": 1758,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/home/diedre/git/vision/PIRockCV/main.cpp",
+			"settings":
+			{
+				"buffer_size": 14908,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/home/diedre/git/vision/PIRockCV/rocks.cpp",
+			"settings":
+			{
+				"buffer_size": 12313,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/home/diedre/git/vision/PIRockCV/rocks.hpp",
+			"settings":
+			{
+				"buffer_size": 4223,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/home/diedre/git/vision/PIRockCV/shot.cpp",
+			"settings":
+			{
+				"buffer_size": 8474,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/home/diedre/git/vision/PIRockCV/shot.hpp",
+			"settings":
+			{
+				"buffer_size": 3378,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/home/diedre/git/vision/PIRockCV/stats",
+			"settings":
+			{
+				"buffer_size": 3287,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/home/diedre/git/vision/PIRockCV/test.cpp",
+			"settings":
+			{
+				"buffer_size": 3684,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/home/diedre/git/vision/PIRockCV/time.cpp",
+			"settings":
+			{
+				"buffer_size": 744,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/home/diedre/git/vision/PIRockCV/time.hpp",
+			"settings":
+			{
+				"buffer_size": 327,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "gpu.cpp",
+			"settings":
+			{
+				"buffer_size": 4124,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "gpu.hpp",
+			"settings":
+			{
+				"buffer_size": 852,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "graphics.cpp",
+			"settings":
+			{
+				"buffer_size": 24107,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "graphics.h",
+			"settings":
+			{
+				"buffer_size": 2849,
+				"line_ending": "Windows"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/home/diedre/git/vision/RockCV/kalman.hpp",
+		"/home/diedre/git/vision/RockCV/time.hpp",
+		"/home/diedre/git/vision/RockCV/rocks.hpp",
+		"/home/diedre/git/vision/RockCV/shot.hpp",
+		"/home/diedre/git/vision/RockCV/camera_transforms.hpp",
+		"/home/diedre/git/vision/RockCV/camera_constants.hpp",
+		"/home/diedre/git/vision/RockCV/ends.hpp",
+		"/home/diedre/git/vision/RockCV/time.cpp",
+		"/home/diedre/git/vision/RockCV/shot.cpp",
+		"/home/diedre/git/vision/RockCV/gpu/gpu.hpp",
+		"/home/diedre/git/vision/RockCV/main.cpp",
+		"/home/diedre/git/vision/RockCV/kalman.cpp",
+		"/home/diedre/git/vision/RockCV/ends.cpp",
+		"/home/diedre/git/vision/RockCV/rocks.cpp",
+		"/home/diedre/git/vision/RockCV/camera_constants.cpp",
+		"/home/diedre/git/vision/RockCV/camera_transforms.cpp",
+		"/home/diedre/git/vision/RockCV/fastcircles.hpp",
+		"/home/diedre/git/vision/RockCV/fastcircles.cpp",
+		"/home/diedre/git/vision/RockCV/test.cpp",
+		"/home/diedre/git/vision/RockCV/debug.txt",
+		"/home/diedre/git/vision/RockCV/shots.txt"
+	],
+	"find":
+	{
+		"height": 34.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"enableGPU",
+			"timer",
+			"mainTimer",
+			"checkShot",
+			"test",
+			"threshold",
+			"back",
+			"debug_text",
+			"input_dir",
+			"inpur_dir",
+			"cout",
+			"SHOT_DEBUG",
+			"updateGame",
+			"shotTimer",
+			"cout",
+			"addAccumulation",
+			"getSaturation",
+			"mainTimer",
+			"yellow",
+			"RED_LOW_HSV",
+			"updateGameTime",
+			"debugimgshow",
+			"timer",
+			"system",
+			"falsePos",
+			"frame"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"rockTimer"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 21,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "/home/diedre/git/vision/PIRockCV/camera_constants.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3156,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 21,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "/home/diedre/git/vision/PIRockCV/camera_constants.hpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1308,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 20,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "/home/diedre/git/vision/PIRockCV/camera_transforms.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2147,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 19,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "/home/diedre/git/vision/PIRockCV/camera_transforms.hpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 478,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 18,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "/home/diedre/git/vision/PIRockCV/debug.txt",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1793,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 17,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "/home/diedre/git/vision/PIRockCV/ends.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 5621,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 16,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "/home/diedre/git/vision/PIRockCV/ends.hpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1326,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 15,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "/home/diedre/git/vision/PIRockCV/kalman.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4161,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 14,
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "/home/diedre/git/vision/PIRockCV/kalman.hpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1758,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 13,
+					"type": "text"
+				},
+				{
+					"buffer": 9,
+					"file": "/home/diedre/git/vision/PIRockCV/main.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 14908,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 12,
+					"type": "text"
+				},
+				{
+					"buffer": 10,
+					"file": "/home/diedre/git/vision/PIRockCV/rocks.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 12313,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 11,
+					"type": "text"
+				},
+				{
+					"buffer": 11,
+					"file": "/home/diedre/git/vision/PIRockCV/rocks.hpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4223,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 10,
+					"type": "text"
+				},
+				{
+					"buffer": 12,
+					"file": "/home/diedre/git/vision/PIRockCV/shot.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 8474,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 9,
+					"type": "text"
+				},
+				{
+					"buffer": 13,
+					"file": "/home/diedre/git/vision/PIRockCV/shot.hpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3378,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 8,
+					"type": "text"
+				},
+				{
+					"buffer": 14,
+					"file": "/home/diedre/git/vision/PIRockCV/stats",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3287,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				},
+				{
+					"buffer": 15,
+					"file": "/home/diedre/git/vision/PIRockCV/test.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3684,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 16,
+					"file": "/home/diedre/git/vision/PIRockCV/time.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 744,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 17,
+					"file": "/home/diedre/git/vision/PIRockCV/time.hpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 327,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 18,
+					"file": "gpu.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4124,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 19,
+					"file": "gpu.hpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 852,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 20,
+					"file": "graphics.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 24107,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 21,
+					"file": "graphics.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2849,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								234,
+								234
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 22.0
+	},
+	"input":
+	{
+		"height": 0.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "pi.sublime-project",
+	"replace":
+	{
+		"height": 40.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"",
+				"~/git/picam-gpu/picam.sublime-project"
+			]
+		],
+		"width": 380.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": false,
+	"side_bar_width": 150.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
