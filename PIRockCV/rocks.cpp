@@ -6,13 +6,12 @@
 #include <stdio.h>
 #include <algorithm>
 #include <sstream>
-#include "gpu/gpu.hpp"
+#include "gpu/picam.hpp"
 
 using namespace std;
 using namespace cv;
 
 Timer rockTimer;
-extern GPU gpu;
 
 void drawRocks(Mat image, vector<Rock> &rocks, const Scalar &center_colour, const Scalar &circle_colour) {
     for (Rock rock : rocks) {
@@ -306,13 +305,14 @@ int findRocksCircles(Mat background, Mat image, vector<Rock> &red_rocks, vector<
     
     rockTimer.methodTimerStart();
     if(enableGPU){
-	gpu.image = channels[1].clone();
-        gpu.runGpu();
-	blurred = gpu.getGpuOutput().clone();
+	setGpuInput(channels[1]);
+	gpuRun();
+	blurred = getGpuOutput();
+	cvtColor(blurred, blurred, CV_BGRA2GRAY);
     } else {
         medianBlur(channels[1], blurred, BLUR_KERNEL_SIZE);
     }
-    rockTimer.getMethodTimer("blur");
+    rockTimer.getMethodTimer("total gpu blur time");
 
     //Run rock position detection
     rockTimer.methodTimerStart();
@@ -330,9 +330,10 @@ int findRocksCircles(Mat background, Mat image, vector<Rock> &red_rocks, vector<
     drawRocks(flat_perspective, yellow_rocks, YELLOW, YELLOW);
  
     //Uncomment to show windowed output
-    //debugImgShow(flat_perspective, "rock positions");
-    //imwrite(output_file, flat_perspective);
-        
+    if (debug) {
+	//debugImgShow(flat_perspective, "rock positions");
+	imwrite(output_file, flat_perspective);
+    }        
     
     
     return 0;

@@ -10,12 +10,12 @@
 #include <omp.h>
 #include "gpu.hpp"
 
-
+#define HYPERSCALE 4
 using namespace std;
 using namespace cv;
 
 GPU::GPU(string referencePath){
-	//initialize graphics and the camera
+	//initialize openGL
 	InitGraphics();
 	cout << "graphics initialized" << endl;
 
@@ -42,19 +42,14 @@ GPU::GPU(string referencePath){
 	if (background.empty()){
 		cout << "reference image not found" << endl;
 	}
-	int imgSize = background.total();
+	int imgSize = background.total() * HYPERSCALE;
 	
 	
 	//Allocate buffers for pixel Data and U and V fillings
-	//Needs "zeros" to fill YUV image
 	pixelData = new uchar[imgSize/2];
 	pixelData2 = new uchar[imgSize/2];
-	zeros = new uchar[imgSize];
 	
-	for(int i =0; i < background.rows; i++)
-		for(int j = 0; j < background.cols; j++){
-			zeros[background.cols*i + j] = 125;
-		}
+	//outputImage = background.clone();
 
 
 	//Fixes bit allignment problems
@@ -62,8 +57,10 @@ GPU::GPU(string referencePath){
 	glPixelStorei(GL_PACK_ALIGNMENT, 1);
 	
 	//Allocate output pixel data
-	output1 = malloc(greysobeltexture.GetWidth()*greysobeltexture.GetHeight()*4);
-	output2 = malloc(greysobeltexture.GetWidth()*greysobeltexture.GetHeight()*4);
+	//output1 = malloc(greysobeltexture.GetWidth()*greysobeltexture.GetHeight()*4 * sizeof(char));
+	//output2 = malloc(greysobeltexture.GetWidth()*greysobeltexture.GetHeight()*4 * sizeof(char));
+	output1 = output2 = NULL;
+	
 
 }
 
@@ -73,7 +70,6 @@ void GPU::imageToGpu(){
 	clock_t read_start = clock();
 	
 	imwrite("imagetogpu.jpg", image);
-
 
 	// Pre load pixel data
 	printf("starting pixel data filling\n");
@@ -111,9 +107,16 @@ void GPU::gpuBlur()
 	printf("median time: %f\n", (float)(clock() - begin_proc)/CLOCKS_PER_SEC );
 
 	clock_t debug_time = clock();
-	concat1 = mediantexture.Save("tex_blur.png", "blur", output1);
-	concat2 = mediantexture2.Save("tex_blur2.png", "blur", output2);
-	hconcat(concat1, concat2, outputImage);	
+	mediantexture.Save();
+	mediantexture2.Save();
+	
+	imwrite("median1.jpg", mediantexture.cvImage);
+
+	imwrite("median2.jpg", mediantexture2.cvImage);
+
+	cout << "concats generated with save, merging..." << endl;
+	
+	hconcat(mediantexture.cvImage, mediantexture2.cvImage, outputImage);	
 	printf("concat time: %f\n", (float)(clock() - debug_time)/CLOCKS_PER_SEC );	
 }
 
@@ -121,10 +124,10 @@ void GPU::gpuBlur()
 void GPU::gpuEdge(){
 	DrawSobelRect(&mediantexture,-1.f,-1.f,1.f,1.f,&greysobeltexture);
 	DrawSobelRect(&mediantexture2,-1.f,-1.f,1.f,1.f,&greysobeltexture2);
-	concat1 = greysobeltexture.Save("tex_sobel.png", "sobel", output1);
+	/*concat1 = greysobeltexture.Save("tex_sobel.png", "sobel", output1);
 	concat2 = greysobeltexture2.Save("tex_sobel2.png", "sobel", output2);
 	hconcat(concat1, concat2, outputImage);		
-
+*/
 }
 
 Mat GPU::getGpuOutput(){

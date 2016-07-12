@@ -235,30 +235,6 @@ ends.cpp.s:
 	$(MAKE) -f CMakeFiles/rock-track.dir/build.make CMakeFiles/rock-track.dir/ends.cpp.s
 .PHONY : ends.cpp.s
 
-gpu.o: gpu.cpp.o
-.PHONY : gpu.o
-
-# target to build an object file
-gpu.cpp.o:
-	$(MAKE) -f CMakeFiles/rock-track.dir/build.make CMakeFiles/rock-track.dir/gpu.cpp.o
-.PHONY : gpu.cpp.o
-
-gpu.i: gpu.cpp.i
-.PHONY : gpu.i
-
-# target to preprocess a source file
-gpu.cpp.i:
-	$(MAKE) -f CMakeFiles/rock-track.dir/build.make CMakeFiles/rock-track.dir/gpu.cpp.i
-.PHONY : gpu.cpp.i
-
-gpu.s: gpu.cpp.s
-.PHONY : gpu.s
-
-# target to generate assembly for a file
-gpu.cpp.s:
-	$(MAKE) -f CMakeFiles/rock-track.dir/build.make CMakeFiles/rock-track.dir/gpu.cpp.s
-.PHONY : gpu.cpp.s
-
 graphics.o: graphics.cpp.o
 .PHONY : graphics.o
 
@@ -307,30 +283,6 @@ kalman.cpp.s:
 	$(MAKE) -f CMakeFiles/rock-track.dir/build.make CMakeFiles/rock-track.dir/kalman.cpp.s
 .PHONY : kalman.cpp.s
 
-lodepng.o: lodepng.cpp.o
-.PHONY : lodepng.o
-
-# target to build an object file
-lodepng.cpp.o:
-	$(MAKE) -f CMakeFiles/rock-track.dir/build.make CMakeFiles/rock-track.dir/lodepng.cpp.o
-.PHONY : lodepng.cpp.o
-
-lodepng.i: lodepng.cpp.i
-.PHONY : lodepng.i
-
-# target to preprocess a source file
-lodepng.cpp.i:
-	$(MAKE) -f CMakeFiles/rock-track.dir/build.make CMakeFiles/rock-track.dir/lodepng.cpp.i
-.PHONY : lodepng.cpp.i
-
-lodepng.s: lodepng.cpp.s
-.PHONY : lodepng.s
-
-# target to generate assembly for a file
-lodepng.cpp.s:
-	$(MAKE) -f CMakeFiles/rock-track.dir/build.make CMakeFiles/rock-track.dir/lodepng.cpp.s
-.PHONY : lodepng.cpp.s
-
 main.o: main.cpp.o
 .PHONY : main.o
 
@@ -354,6 +306,30 @@ main.s: main.cpp.s
 main.cpp.s:
 	$(MAKE) -f CMakeFiles/rock-track.dir/build.make CMakeFiles/rock-track.dir/main.cpp.s
 .PHONY : main.cpp.s
+
+picam.o: picam.cpp.o
+.PHONY : picam.o
+
+# target to build an object file
+picam.cpp.o:
+	$(MAKE) -f CMakeFiles/rock-track.dir/build.make CMakeFiles/rock-track.dir/picam.cpp.o
+.PHONY : picam.cpp.o
+
+picam.i: picam.cpp.i
+.PHONY : picam.i
+
+# target to preprocess a source file
+picam.cpp.i:
+	$(MAKE) -f CMakeFiles/rock-track.dir/build.make CMakeFiles/rock-track.dir/picam.cpp.i
+.PHONY : picam.cpp.i
+
+picam.s: picam.cpp.s
+.PHONY : picam.s
+
+# target to generate assembly for a file
+picam.cpp.s:
+	$(MAKE) -f CMakeFiles/rock-track.dir/build.make CMakeFiles/rock-track.dir/picam.cpp.s
+.PHONY : picam.cpp.s
 
 rocks.o: rocks.cpp.o
 .PHONY : rocks.o
@@ -451,21 +427,18 @@ help:
 	@echo "... ends.o"
 	@echo "... ends.i"
 	@echo "... ends.s"
-	@echo "... gpu.o"
-	@echo "... gpu.i"
-	@echo "... gpu.s"
 	@echo "... graphics.o"
 	@echo "... graphics.i"
 	@echo "... graphics.s"
 	@echo "... kalman.o"
 	@echo "... kalman.i"
 	@echo "... kalman.s"
-	@echo "... lodepng.o"
-	@echo "... lodepng.i"
-	@echo "... lodepng.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... picam.o"
+	@echo "... picam.i"
+	@echo "... picam.s"
 	@echo "... rocks.o"
 	@echo "... rocks.i"
 	@echo "... rocks.s"

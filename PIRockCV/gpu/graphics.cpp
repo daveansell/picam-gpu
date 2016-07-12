@@ -724,7 +724,7 @@ void GfxTexture::SetPixels(const void* data)
 	glBindTexture(GL_TEXTURE_2D, 0);
 	check();
 }
-
+/*
 void SaveFrameBuffer(const char* fname)
 {
 	void* image = malloc(GScreenWidth*GScreenHeight*4);
@@ -738,7 +738,7 @@ void SaveFrameBuffer(const char* fname)
 
 	free(image);
 
-}
+}*/
 
 Mat GfxTexture::Save(const char* fname, std::string type, void * image)
 {
@@ -754,7 +754,6 @@ Mat GfxTexture::Save(const char* fname, std::string type, void * image)
 
 	Mat cvImage(Size(Width, Height), CV_8UC4,  image);
 	
-	//Saves image, could be done externally
 	/*if (debug) {
 		buffer << "debug/image-" << type <<  ncalls++ << ".jpg";
 
@@ -762,10 +761,10 @@ Mat GfxTexture::Save(const char* fname, std::string type, void * image)
 		buffer.str(std::string());
 		buffer.clear();
 		//LODE PNG IS BAD
-		
-		//unsigned error = lodepng::encode(fname, (const unsigned char*)image, Width, Height, IsRGBA ? LCT_RGBA : LCT_GREY);
-		//if(error) 
-		//	printf("error: %d\n",error);
+		/*
+		unsigned error = lodepng::encode(fname, (const unsigned char*)image, Width, Height, IsRGBA ? LCT_RGBA : LCT_GREY);
+		if(error) 
+			printf("error: %d\n",error);
 		
 	}*/
 	return cvImage;

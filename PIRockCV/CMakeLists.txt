@@ -11,7 +11,7 @@ include_directories(/opt/vc/userland-master/interface/vmcs_host/linux)
 include_directories(/opt/vc/userland-master/host_applications/linux/libs/bcm_host/include)
 link_directories(/opt/vc/lib)
 
-add_executable( rock-track main.cpp rocks.cpp camera_transforms.cpp camera_constants.cpp ends.cpp kalman.cpp shot.cpp time.cpp gpu.cpp camera.cpp cameracontrol.cpp graphics.cpp lodepng.cpp)
+add_executable( rock-track main.cpp rocks.cpp camera_transforms.cpp camera_constants.cpp ends.cpp kalman.cpp shot.cpp time.cpp picam.cpp camera.cpp cameracontrol.cpp graphics.cpp)
 target_link_libraries( rock-track ${OpenCV_LIBS} libmmal_core.so libmmal_util.so libmmal_vc_client.so libvcos.so libbcm_host.so GLESv2 EGL ncurses)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11 -g -fopenmp")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11 -g -O3 -fopenmp")
 

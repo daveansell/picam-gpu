@@ -1,1 +1,0 @@
-/home/pi/git/PIRockCV/gpu/CMakeFiles/rock-track.dir

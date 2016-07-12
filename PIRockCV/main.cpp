@@ -5,8 +5,7 @@
 #include "shot.hpp"
 #include "time.hpp"
 
- 
-#include "gpu/gpu.hpp"
+ #include "gpu/picam.hpp"
 
 
 
@@ -30,7 +29,6 @@ Timer mainTimer;
 
 //GPU
 bool enableGPU = false;
-GPU gpu;
 
 
 
@@ -232,7 +230,7 @@ void runEnd(char *background_file, char *input_dir, char *output_dir, const Stri
 
     //Initialize GPU if used
     if (enableGPU){
-        gpu = GPU(background_file);
+        gpuInit(background_file);
     }
 
 
